@@ -1,4 +1,4 @@
-{
+module.exports = {
   "name": "Order",
   "type": "object",
   "properties": {
@@ -94,4 +94,4 @@
     "items",
     "total_amount"
   ]
-}
+};

@@ -1,14 +1,17 @@
 {
-  "name": "GalleryItem",
+  "name": "TeamMember",
   "type": "object",
   "properties": {
+    "name": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "string"
+    },
     "image_url": {
-      "type": "string"
-    },
-    "caption": {
-      "type": "string"
-    },
-    "category": {
       "type": "string"
     },
     "sort_order": {
@@ -17,6 +20,7 @@
     }
   },
   "required": [
-    "image_url"
+    "name",
+    "role"
   ]
 }
