@@ -1,12 +1,19 @@
 #!/bin/bash
+set -e
 
-# This is a template for deployment scripts.
-# Add your deployment commands here.
+# Ensure the SDK is built before deployment
+echo "Building SDK..."
+cd sdk
+npm install --legacy-peer-deps
+npm run build
+cd ..
 
-echo "Starting deployment..."
+# Commit and push changes
+echo "Committing and pushing changes..."
+git add .
+git commit -m "deploy"
+git push origin main
 
-# Example:
-# npm install && npm run build
-# rsync -avz dist/ user@your-server:/path/to/your/app
-
-echo "Deployment finished."
+# Build and deploy the e2b template
+echo "Building and deploying e2b template..."
+cd e2b_template && e2b template build -c "npm run dev"

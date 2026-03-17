@@ -1,2 +1,6 @@
-// Main export for utility functions
-export {};
+
+
+
+export function createPageUrl(pageName: string) {
+    return '/' + pageName.toLowerCase().replace(/ /g, '-');
+}
