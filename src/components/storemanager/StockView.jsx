@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Search, ShoppingBag, ToggleLeft, ToggleRight } from "lucide-react";
+import { Search, ShoppingBag } from "lucide-react";
 
 const CATEGORY_LABELS = { tops: "Tops", bottoms: "Bottoms", dresses: "Dresses", outerwear: "Outerwear", accessories: "Accessories", shoes: "Shoes" };
 
@@ -13,7 +11,7 @@ export default function StockView() {
   const [category, setCategory] = useState("all");
 
   useEffect(() => {
-    base44.entities.Product.list("-created_date", 200).then(setProducts).finally(() => setLoading(false));
+    Promise.resolve([]).then(setProducts).finally(() => setLoading(false));
   }, []);
 
   const filtered = products.filter(p => {

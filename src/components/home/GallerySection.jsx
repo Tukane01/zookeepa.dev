@@ -14,7 +14,7 @@ const FALLBACK_IMAGES = [
 
 export default function GallerySection({ items }) {
   const [lightbox, setLightbox] = useState(null);
-  const display = items.length > 0 ? items : FALLBACK_IMAGES;
+  const display = items?.length > 0 ? items : FALLBACK_IMAGES;
 
   return (
     <section id="gallery" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">

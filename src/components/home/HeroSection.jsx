@@ -20,16 +20,16 @@ export default function HeroSection() {
           More than clothing — a movement. Bold designs, wild spirit, African soul.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link to={createPageUrl("Shop")}>
-            <Button className="bg-yellow-500 hover:bg-yellow-400 text-black font-semibold px-10 py-3 tracking-widest text-sm rounded-none h-12">
+          <Button asChild className="bg-yellow-500 hover:bg-yellow-400 text-black font-semibold px-10 py-3 tracking-widest text-sm rounded-none h-12">
+            <Link to={createPageUrl("Shop")}>
               <ShoppingBag className="w-4 h-4 mr-2" /> Shop Now
-            </Button>
-          </Link>
-          <a href="#gallery">
-            <Button variant="outline" className="border-white text-white hover:bg-white hover:text-black px-10 py-3 tracking-widest text-sm rounded-none h-12 bg-transparent">
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="border-white text-white hover:bg-white hover:text-black px-10 py-3 tracking-widest text-sm rounded-none h-12 bg-transparent">
+            <a href="#gallery">
               Explore
-            </Button>
-          </a>
+            </a>
+          </Button>
         </div>
       </div>
       {/* Scroll indicator */}

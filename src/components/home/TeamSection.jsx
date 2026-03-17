@@ -11,7 +11,7 @@ const FALLBACK_TEAM = [
 ];
 
 export default function TeamSection({ members }) {
-  const display = members.length > 0 ? members : FALLBACK_TEAM;
+  const display = members?.length > 0 ? members : FALLBACK_TEAM;
 
   return (
     <section id="team" className="py-20 bg-white">

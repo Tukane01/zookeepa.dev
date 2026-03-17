@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,24 +18,23 @@ export default function CareersManagement() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => { load(); }, []);
-  const load = async () => setItems(await base44.entities.Career.list("-created_date", 50));
+  const load = async () => setItems([]);
 
   const openNew = () => { setEditing(null); setForm({ title: "", department: "", type: "Full-time", location: "", description: "", is_open: true }); setDialog(true); };
   const openEdit = (item) => { setEditing(item); setForm({ title: item.title, department: item.department, type: item.type || "Full-time", location: item.location || "", description: item.description || "", is_open: item.is_open !== false }); setDialog(true); };
 
   const save = async () => {
     setSaving(true);
-    if (editing) { await base44.entities.Career.update(editing.id, form); setItems(items.map(i => i.id === editing.id ? { ...i, ...form } : i)); }
-    else { const c = await base44.entities.Career.create(form); setItems([c, ...items]); }
+    if (editing) { setItems(items.map(i => i.id === editing.id ? { ...i, ...form } : i)); }
+    else { const c = { id: Date.now().toString(), ...form }; setItems([c, ...items]); }
     setSaving(false); setDialog(false);
   };
 
   const toggle = async (item) => {
-    await base44.entities.Career.update(item.id, { is_open: !item.is_open });
     setItems(items.map(i => i.id === item.id ? { ...i, is_open: !i.is_open } : i));
   };
 
-  const del = async (id) => { if (!confirm("Delete this career posting?")) return; await base44.entities.Career.delete(id); setItems(items.filter(i => i.id !== id)); };
+  const del = async (id) => { if (!confirm("Delete this career posting?")) return; setItems(items.filter(i => i.id !== id)); };
 
   const TYPE_COLORS = { "Full-time": "bg-green-100 text-green-800", "Part-time": "bg-blue-100 text-blue-800", "Contract": "bg-purple-100 text-purple-800", "Internship": "bg-yellow-100 text-yellow-800" };
 

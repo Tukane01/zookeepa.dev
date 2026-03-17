@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,7 +22,7 @@ export default function SiteSettingsManagement() {
   useEffect(() => { load(); }, []);
 
   const load = async () => {
-    const arr = await base44.entities.SiteSettings.list();
+    const arr = [];
     if (arr.length > 0) {
       const s = arr[0]; setSettings(s);
       setForm({
@@ -40,8 +39,8 @@ export default function SiteSettingsManagement() {
 
   const save = async () => {
     setSaving(true);
-    if (settings) await base44.entities.SiteSettings.update(settings.id, form);
-    else { const c = await base44.entities.SiteSettings.create({ key: "main", ...form }); setSettings(c); }
+    if (settings) { setSettings({...settings, ...form}) }
+    else { const c = { key: "main", ...form }; setSettings(c); }
     setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 2500);
   };
 

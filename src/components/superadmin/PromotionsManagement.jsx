@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,20 +18,20 @@ export default function PromotionsManagement() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => { load(); }, []);
-  const load = async () => setItems(await base44.entities.Promotion.list("-created_date", 50));
+  const load = async () => setItems([]);
 
   const openNew = () => { setEditing(null); setForm({ title: "", message: "", type: "announcement", is_active: true, background_color: "#D4AF37", text_color: "#1a1a1a", cta_text: "", sort_order: 0 }); setDialog(true); };
   const openEdit = (p) => { setEditing(p); setForm({ title: p.title, message: p.message, type: p.type || "announcement", is_active: p.is_active !== false, background_color: p.background_color || "#D4AF37", text_color: p.text_color || "#1a1a1a", cta_text: p.cta_text || "", sort_order: p.sort_order || 0 }); setDialog(true); };
 
   const save = async () => {
     setSaving(true);
-    if (editing) { await base44.entities.Promotion.update(editing.id, form); setItems(items.map(i => i.id === editing.id ? { ...i, ...form } : i)); }
-    else { const c = await base44.entities.Promotion.create(form); setItems([c, ...items]); }
+    if (editing) { setItems(items.map(i => i.id === editing.id ? { ...i, ...form } : i)); }
+    else { const c = { id: Date.now().toString(), ...form }; setItems([c, ...items]); }
     setSaving(false); setDialog(false);
   };
 
-  const toggle = async (p) => { await base44.entities.Promotion.update(p.id, { is_active: !p.is_active }); setItems(items.map(i => i.id === p.id ? { ...i, is_active: !i.is_active } : i)); };
-  const del = async (id) => { if (!confirm("Delete this promotion?")) return; await base44.entities.Promotion.delete(id); setItems(items.filter(i => i.id !== id)); };
+  const toggle = async (p) => { setItems(items.map(i => i.id === p.id ? { ...i, is_active: !i.is_active } : i)); };
+  const del = async (id) => { if (!confirm("Delete this promotion?")) return; setItems(items.filter(i => i.id !== id)); };
 
   return (
     <div>

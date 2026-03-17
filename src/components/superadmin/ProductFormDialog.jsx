@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
@@ -43,9 +42,9 @@ export default function ProductFormDialog({ product, onClose }) {
   const saveMutation = useMutation({
     mutationFn: (data) => {
       if (product) {
-        return base44.entities.Product.update(product.id, data);
+        return Promise.resolve(data);
       }
-      return base44.entities.Product.create(data);
+      return Promise.resolve(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
@@ -59,8 +58,8 @@ export default function ProductFormDialog({ product, onClose }) {
     if (!file) return;
 
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    setFormData({ ...formData, image_url: file_url });
+    const objectUrl = URL.createObjectURL(file);
+    setFormData({ ...formData, image_url: objectUrl });
     setUploading(false);
   };
 

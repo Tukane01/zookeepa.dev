@@ -8,7 +8,7 @@ const FALLBACK_EVENTS = [
 ];
 
 export default function EventsSection({ events }) {
-  const display = events.length > 0 ? events : FALLBACK_EVENTS;
+  const display = events?.length > 0 ? events : FALLBACK_EVENTS;
 
   return (
     <section id="events" className="py-20 bg-black text-white">

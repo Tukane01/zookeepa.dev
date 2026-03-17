@@ -12,7 +12,7 @@ const FALLBACK_PARTNERS = [
 ];
 
 export default function PartnersSection({ partners }) {
-  const display = partners.length > 0 ? partners : FALLBACK_PARTNERS;
+  const display = partners?.length > 0 ? partners : FALLBACK_PARTNERS;
 
   return (
     <section id="partners" className="py-20 bg-gray-50">

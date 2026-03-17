@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,19 +14,19 @@ export default function EventsManagement() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => { load(); }, []);
-  const load = async () => setItems(await base44.entities.Event.list("-date", 50));
+  const load = async () => setItems([]);
 
   const openNew = () => { setEditing(null); setForm({ title: "", description: "", date: "", location: "", image_url: "" }); setDialog(true); };
   const openEdit = (item) => { setEditing(item); setForm({ title: item.title, description: item.description || "", date: item.date || "", location: item.location || "", image_url: item.image_url || "" }); setDialog(true); };
 
   const save = async () => {
     setSaving(true);
-    if (editing) { await base44.entities.Event.update(editing.id, form); setItems(items.map(i => i.id === editing.id ? { ...i, ...form } : i)); }
-    else { const c = await base44.entities.Event.create(form); setItems([c, ...items]); }
+    if (editing) { setItems(items.map(i => i.id === editing.id ? { ...i, ...form } : i)); }
+    else { const c = { id: Date.now().toString(), ...form }; setItems([c, ...items]); }
     setSaving(false); setDialog(false);
   };
 
-  const del = async (id) => { if (!confirm("Delete this event?")) return; await base44.entities.Event.delete(id); setItems(items.filter(i => i.id !== id)); };
+  const del = async (id) => { if (!confirm("Delete this event?")) return; setItems(items.filter(i => i.id !== id)); };
 
   return (
     <div>

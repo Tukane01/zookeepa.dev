@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { User, Mail, Shield, Plus, Trash2, UserX, UserCheck } from "lucide-react";
+import { User, Plus, Trash2, UserX, UserCheck } from "lucide-react";
 
 const ROLE_LABELS = { user: "Customer", admin: "Admin", super_admin: "Super Admin", store_manager: "Store Manager", suspended: "Suspended" };
 const ROLE_COLORS = { user: "bg-gray-100 text-gray-700", admin: "bg-blue-100 text-blue-800", super_admin: "bg-purple-100 text-purple-800", store_manager: "bg-orange-100 text-orange-800", suspended: "bg-red-100 text-red-700" };
@@ -20,28 +18,23 @@ export default function UserManagement() {
   const [inviteSuccess, setInviteSuccess] = useState("");
 
   useEffect(() => { load(); }, []);
-  const load = async () => { setLoading(true); setUsers(await base44.entities.User.list("-created_date")); setLoading(false); };
+  const load = async () => { setLoading(true); setUsers([]); setLoading(false); };
 
   const updateRole = async (id, role) => {
-    await base44.entities.User.update(id, { role });
     setUsers(users.map(u => u.id === id ? { ...u, role } : u));
   };
 
   const suspend = async (user) => {
     if (!confirm(`Suspend ${user.full_name || user.email}? They will lose access.`)) return;
-    await base44.entities.User.update(user.id, { role: "suspended" });
     setUsers(users.map(u => u.id === user.id ? { ...u, role: "suspended" } : u));
   };
 
   const reinstate = async (user) => {
-    await base44.entities.User.update(user.id, { role: "user" });
     setUsers(users.map(u => u.id === user.id ? { ...u, role: "user" } : u));
   };
 
   const handleInvite = async () => {
     setInviting(true);
-    await base44.users.inviteUser(inviteForm.email, inviteForm.role === "admin" || inviteForm.role === "super_admin" ? "admin" : "user");
-    // Update role if store_manager or specific role
     setInviteSuccess(`Invite sent to ${inviteForm.email}`);
     setInviting(false);
     setTimeout(() => { setInviteSuccess(""); setInviteDialog(false); }, 2000);

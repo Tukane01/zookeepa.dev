@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { base44 } from "@/api/base44Client";
-import { ShoppingBag, Menu, X, User, Package, Settings, LogOut, Shield } from "lucide-react";
+import { ShoppingBag, Menu, X, User, LogOut, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Layout({ children, currentPageName }) {
@@ -19,7 +18,7 @@ export default function Layout({ children, currentPageName }) {
   }, []);
 
   const loadUser = async () => {
-    try { const u = await base44.auth.me(); setUser(u); } catch {}
+    try { setUser({ role: 'user', full_name: 'Dummy User' }); } catch {}
   };
 
   const loadCart = () => {
@@ -27,7 +26,7 @@ export default function Layout({ children, currentPageName }) {
     setCartCount(cart.reduce((s, i) => s + i.quantity, 0));
   };
 
-  const handleLogout = () => base44.auth.logout();
+  const handleLogout = () => setUser(null);
 
   const role = user?.role;
   const isAdmin = role === "admin" || role === "super_admin";
@@ -128,7 +127,7 @@ export default function Layout({ children, currentPageName }) {
                   </Button>
                 </div>
               ) : (
-                <Button variant="ghost" size="sm" className="text-xs tracking-wider" onClick={() => base44.auth.redirectToLogin()}>
+                <Button variant="ghost" size="sm" className="text-xs tracking-wider" onClick={() => window.location.href = '/login'}>
                   Sign In
                 </Button>
               )}

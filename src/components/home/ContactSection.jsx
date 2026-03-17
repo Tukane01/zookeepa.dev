@@ -5,12 +5,16 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
 // Fix leaflet default marker icon
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-});
+if (L?.Icon?.Default?.prototype?._getIconUrl) {
+  delete L.Icon.Default.prototype._getIconUrl;
+}
+if (L?.Icon?.Default?.mergeOptions) {
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  });
+}
 
 // ZooKeepa HQ — Maboneng, Johannesburg
 const LAT = -26.2041;

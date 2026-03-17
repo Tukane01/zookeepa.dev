@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { User, Mail, UserX, UserCheck, Trash2, Search, Send, Users, MessageSquare } from "lucide-react";
+import { User, Mail, UserX, UserCheck, Trash2, Search, Send, Users } from "lucide-react";
 
 export default function CustomersManagement() {
   const [customers, setCustomers] = useState([]);
@@ -22,25 +21,22 @@ export default function CustomersManagement() {
 
   const load = async () => {
     setLoading(true);
-    const all = await base44.entities.User.list("-created_date");
+    const all = [];
     setCustomers(all.filter(u => u.role === "user" || u.role === "suspended" || !u.role));
     setLoading(false);
   };
 
   const suspend = async (u) => {
     if (!confirm(`Suspend ${u.full_name || u.email}? They will lose all access.`)) return;
-    await base44.entities.User.update(u.id, { role: "suspended" });
     setCustomers(c => c.map(x => x.id === u.id ? { ...x, role: "suspended" } : x));
   };
 
   const reinstate = async (u) => {
-    await base44.entities.User.update(u.id, { role: "user" });
     setCustomers(c => c.map(x => x.id === u.id ? { ...x, role: "user" } : x));
   };
 
   const deleteCustomer = async (u) => {
     if (!confirm(`Permanently delete ${u.full_name || u.email}? This cannot be undone.`)) return;
-    await base44.entities.User.delete(u.id);
     setCustomers(c => c.filter(x => x.id !== u.id));
   };
 
@@ -59,12 +55,6 @@ export default function CustomersManagement() {
 
   const sendEmail = async () => {
     setSending(true);
-    await base44.integrations.Core.SendEmail({
-      to: selectedCustomer.email,
-      subject: emailForm.subject,
-      body: emailForm.body,
-      from_name: "ZooKeepa"
-    });
     setSentMsg(`Email sent to ${selectedCustomer.email}`);
     setSending(false);
     setTimeout(() => { setSentMsg(""); setEmailDialog(false); }, 2000);
@@ -73,14 +63,6 @@ export default function CustomersManagement() {
   const sendBulkEmail = async () => {
     setSending(true);
     const activeCustomers = customers.filter(u => u.role !== "suspended" && u.email);
-    for (const customer of activeCustomers) {
-      await base44.integrations.Core.SendEmail({
-        to: customer.email,
-        subject: emailForm.subject,
-        body: emailForm.body,
-        from_name: "ZooKeepa"
-      });
-    }
     setSentMsg(`Promotion sent to ${activeCustomers.length} customers!`);
     setSending(false);
     setTimeout(() => { setSentMsg(""); setBulkEmailDialog(false); }, 3000);
