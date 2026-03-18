@@ -3,6 +3,7 @@ import { createPageUrl } from "@/utils";
 import { Package, ChevronDown, ChevronUp, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/AuthContext";
 
 const STATUS_COLORS = {
   pending: "bg-yellow-100 text-yellow-800",
@@ -14,20 +15,29 @@ const STATUS_COLORS = {
 
 export default function MyOrders() {
   const [orders, setOrders] = useState([]);
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(null);
 
   useEffect(() => {
-    Promise.resolve({ email: 'user@example.com', role: 'user' }).then(u => {
-      setUser(u);
-      return Promise.resolve([]);
-    }).then(res => {
-      setOrders(res);
-    }).catch(() => {
-      window.location.href = '/login';
-    }).finally(() => setLoading(false));
-  }, []);
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+    const token = localStorage.getItem('token');
+    fetch('/api/orders/my', { headers: { 'Authorization': `Bearer ${token}` } })
+      .then(res => res.ok ? res.json() : [])
+      .then(data => {
+        if (Array.isArray(data)) {
+           setOrders(data.map(o => ({
+             ...o,
+             items: typeof o.items === 'string' ? JSON.parse(o.items) : o.items,
+             shipping_address: typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : o.shipping_address
+           })));
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [user]);
 
   if (loading) return <div className="min-h-[60vh] flex items-center justify-center"><div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" /></div>;
 

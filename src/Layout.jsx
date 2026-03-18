@@ -3,30 +3,26 @@ import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { ShoppingBag, Menu, X, User, LogOut, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function Layout({ children, currentPageName }) {
-  const [user, setUser] = useState(null);
+  const { user, logout } = useAuth();
   const [cartCount, setCartCount] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => { 
-    loadUser(); 
     loadCart(); 
     window.addEventListener("cartUpdated", loadCart);
     return () => window.removeEventListener("cartUpdated", loadCart);
   }, []);
-
-  const loadUser = async () => {
-    try { setUser({ role: 'user', full_name: 'Dummy User' }); } catch {}
-  };
 
   const loadCart = () => {
     const cart = JSON.parse(localStorage.getItem("zookeepacart") || "[]");
     setCartCount(cart.reduce((s, i) => s + i.quantity, 0));
   };
 
-  const handleLogout = () => setUser(null);
+  const handleLogout = () => logout(true);
 
   const role = user?.role;
   const isAdmin = role === "admin" || role === "super_admin";

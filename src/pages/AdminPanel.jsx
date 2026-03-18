@@ -10,12 +10,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/lib/AuthContext";
 
 const CATEGORIES = ["tops", "bottoms", "dresses", "outerwear", "accessories", "shoes"];
 const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 const PROMO_TYPES = ["announcement", "competition", "sale", "new_arrival"];
 
 export default function AdminPanel() {
+  const { user } = useAuth();
   const [products, setProducts] = useState([]);
   const [promotions, setPromotions] = useState([]);
   const [settings, setSettings] = useState(null);
@@ -32,24 +34,27 @@ export default function AdminPanel() {
   const [siteForm, setSiteForm] = useState({ hero_image_url: "", hero_title: "", hero_subtitle: "", hero_cta_text: "" });
 
   useEffect(() => {
-    Promise.resolve({ role: 'admin' }).then(u => {
-      if (u.role !== "admin") { navigate(createPageUrl("Shop")); return; }
-      return Promise.all([
-        Promise.resolve([]),
-        Promise.resolve([]),
-        Promise.resolve([])
-      ]);
-    }).then((res) => {
+    if (!user) return;
+    if (user.role !== "admin" && user.role !== "super_admin") { navigate(createPageUrl("Shop")); return; }
+    Promise.all([
+      fetch('/api/products').then(r => r.ok ? r.json() : []),
+      Promise.resolve([]),
+      Promise.resolve([])
+    ]).then((res) => {
       if (!res) return;
       const [prods, promos, siteArr] = res;
-      setProducts(prods);
+      setProducts(Array.isArray(prods) ? prods.map(p => ({
+        ...p,
+        sizes: typeof p.sizes === 'string' ? JSON.parse(p.sizes) : (p.sizes || []),
+        colors: typeof p.colors === 'string' ? JSON.parse(p.colors) : (p.colors || [])
+      })) : []);
       setPromotions(promos);
       if (siteArr?.length > 0) {
         setSettings(siteArr[0]);
         setSiteForm({ hero_image_url: siteArr[0].hero_image_url || "", hero_title: siteArr[0].hero_title || "", hero_subtitle: siteArr[0].hero_subtitle || "", hero_cta_text: siteArr[0].hero_cta_text || "" });
       }
     }).catch(() => {}).finally(() => setLoading(false));
-  }, []);
+  }, [user, navigate]);
 
   const openNewProduct = () => {
     setEditProduct(null);
@@ -66,21 +71,31 @@ export default function AdminPanel() {
   const saveProduct = async () => {
     setSaving(true);
     const data = { ...pForm, price: parseFloat(pForm.price), sale_price: pForm.sale_price ? parseFloat(pForm.sale_price) : null, stock: parseInt(pForm.stock) || 0, colors: pForm.colors.split(",").map(c => c.trim()).filter(Boolean) };
-    if (editProduct) {
-      setProducts(ps => ps.map(p => p.id === editProduct.id ? { ...p, ...data } : p));
-    } else {
-      setProducts(ps => [{ id: Date.now().toString(), ...data }, ...ps]);
-    }
+    const token = localStorage.getItem('token');
+    try {
+      if (editProduct) {
+        await fetch(`/api/products/${editProduct.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(data) });
+        setProducts(ps => ps.map(p => p.id === editProduct.id ? { ...p, ...data } : p));
+      } else {
+        const res = await fetch('/api/products', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(data) });
+        const created = await res.json();
+        setProducts(ps => [{ ...data, id: created.id || Date.now().toString() }, ...ps]);
+      }
+    } catch(err) { console.error(err); }
     setSaving(false);
     setProductDialog(false);
   };
 
   const deleteProduct = async (id) => {
     if (!confirm("Delete this product?")) return;
+    const token = localStorage.getItem('token');
+    await fetch(`/api/products/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
     setProducts(ps => ps.filter(p => p.id !== id));
   };
 
   const toggleProduct = async (product) => {
+    const token = localStorage.getItem('token');
+    await fetch(`/api/products/${product.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ ...product, is_active: !product.is_active }) });
     setProducts(ps => ps.map(p => p.id === product.id ? { ...p, is_active: !p.is_active } : p));
   };
 

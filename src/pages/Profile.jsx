@@ -5,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { User, Save, CheckCircle } from "lucide-react";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function Profile() {
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [saved, setSaved] = useState(false);
   const [formData, setFormData] = useState({
     phone: "",
@@ -18,28 +19,27 @@ export default function Profile() {
     country: ""
   });
 
-  const loadUser = React.useCallback(async () => {
-    try {
-      const currentUser = { full_name: 'Dummy User', email: 'dummy@example.com', role: 'user' };
-      setUser(currentUser);
-      
+  useEffect(() => {
+    if (user) {
+      const addr = typeof user.shipping_address === 'string' ? JSON.parse(user.shipping_address) : (user.shipping_address || {});
       setFormData(prev => ({
         ...prev,
-        phone: currentUser.phone || prev.phone,
-        ...(currentUser.shipping_address || {})
+        phone: user.phone || prev.phone,
+        ...addr
       }));
-    } catch (error) {
-      window.location.href = '/login';
     }
-  }, []);
-
-  useEffect(() => {
-    loadUser();
-  }, [loadUser]);
+  }, [user]);
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data) => {
-      return Promise.resolve(data);
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/users/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error('Update failed');
+      return res.json();
     },
     onSuccess: () => {
       setSaved(true);

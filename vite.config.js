@@ -39,19 +39,22 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      host: '0.0.0.0', // Bind to all interfaces for container access
+      host: 'localhost', // Bind to localhost only
       port: 5173,
-      strictPort: true,
+      strictPort: false,
       // Allow all hosts - essential for Modal tunnel URLs
       allowedHosts: true,
+      proxy: {
+        '/api': {
+          target: 'http://localhost:5000', // Proxies to Express Backend
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, '')
+        }
+      },
       watch: {
         // Enable polling for better file change detection in containers
         usePolling: true,
         interval: 100, // Check every 100ms for responsive HMR
-      },
-      hmr: {
-        protocol: 'wss',
-        clientPort: 443
       }
     },
     resolve: {

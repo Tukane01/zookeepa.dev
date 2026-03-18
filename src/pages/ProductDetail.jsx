@@ -17,19 +17,19 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (id) {
-      Promise.resolve([{
-        id,
-        name: "Sample Product",
-        description: "Bold designs. Premium quality. Made for those who dare.",
-        price: 299.99,
-        category: "tops",
-        sizes: ["S", "M", "L"],
-        colors: ["Black", "White"],
-        image_url: "https://images.unsplash.com/photo-1515347619362-710e4a77cb20?w=800&q=80",
-        stock: 10
-      }]).then(r => { 
-        if (r[0]) { setProduct(r[0]); setSelectedSize(r[0].sizes?.[0] || ""); setSelectedColor(r[0].colors?.[0] || ""); } 
-      }).finally(() => setLoading(false));
+      fetch(`/api/products/${id}`)
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data && !data.message) {
+             data.sizes = typeof data.sizes === 'string' ? JSON.parse(data.sizes) : (data.sizes || []);
+             data.colors = typeof data.colors === 'string' ? JSON.parse(data.colors) : (data.colors || []);
+             data.additional_images = typeof data.additional_images === 'string' ? JSON.parse(data.additional_images) : (data.additional_images || []);
+             setProduct(data);
+             setSelectedSize(data.sizes?.[0] || "");
+             setSelectedColor(data.colors?.[0] || "");
+          }
+        })
+        .finally(() => setLoading(false));
     } else {
       setLoading(false);
     }

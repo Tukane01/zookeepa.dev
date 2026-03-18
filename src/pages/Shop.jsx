@@ -22,11 +22,15 @@ export default function Shop() {
 
   useEffect(() => {
     Promise.all([
-      Promise.resolve([]), // Mock Products
+      fetch('/api/products').then(res => res.ok ? res.json() : []),
       Promise.resolve([]), // Mock Promotions
       Promise.resolve([])  // Mock SiteSettings
     ]).then(([prods, promos, siteArr]) => {
-      setProducts(prods);
+      setProducts(Array.isArray(prods) ? prods.map(p => ({
+        ...p,
+        sizes: typeof p.sizes === 'string' ? JSON.parse(p.sizes) : (p.sizes || []),
+        colors: typeof p.colors === 'string' ? JSON.parse(p.colors) : (p.colors || [])
+      })) : []);
       setPromotions(promos.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)));
       if (siteArr.length > 0) setSettings(siteArr[0]);
       setLoading(false);

@@ -1,11 +1,4 @@
 import React, { useState, useEffect } from "react";
-import HeroSection from "../components/home/HeroSection";
-import GallerySection from "../components/home/GallerySection";
-import EventsSection from "../components/home/EventsSection";
-import PartnersSection from "../components/home/PartnersSection";
-import TeamSection from "../components/home/TeamSection";
-import CareersSection from "../components/home/CareersSection";
-import ContactSection from "../components/home/ContactSection";
 
 export default function Home() {
   const [gallery, setGallery] = useState([]);
@@ -33,13 +26,21 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      <HeroSection />
-      <GallerySection items={gallery} />
-      <EventsSection events={events} />
-      <PartnersSection partners={partners} />
-      <TeamSection members={team} />
-      <CareersSection careers={careers} />
-      <ContactSection />
+      <div className="h-[60vh] flex items-center justify-center bg-gray-100">
+        <h1 className="text-4xl font-bold text-gray-400">Hero Section Coming Soon</h1>
+      </div>
+      <div className="py-20 px-4 text-center">
+        <h2 className="text-2xl font-semibold mb-4">Gallery Section</h2>
+        <p className="text-gray-500">Coming Soon</p>
+      </div>
+      <div className="py-20 px-4 text-center bg-gray-50">
+        <h2 className="text-2xl font-semibold mb-4">Events Section</h2>
+        <p className="text-gray-500">Coming Soon</p>
+      </div>
+      <div className="py-20 px-4 text-center">
+        <h2 className="text-2xl font-semibold mb-4">Contact Section</h2>
+        <p className="text-gray-500">Coming Soon</p>
+      </div>
     </div>
   );
 }

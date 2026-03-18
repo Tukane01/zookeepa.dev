@@ -5,9 +5,10 @@ import { CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function Checkout() {
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [cart, setCart] = useState([]);
   const [form, setForm] = useState({ street: "", city: "", state: "", zip_code: "", country: "", phone: "" });
   const [loading, setLoading] = useState(false);
@@ -16,14 +17,16 @@ export default function Checkout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    Promise.resolve({ email: 'dummy@example.com', full_name: 'Dummy User' }).then(u => {
-      setUser(u);
-      if (u.shipping_address) setForm(f => ({ ...f, ...u.shipping_address, phone: u.phone || "" }));
-    }).catch(() => {
+    if (!user) {
       window.location.href = '/login';
-    });
+      return;
+    }
+    if (user.shipping_address) {
+       const addr = typeof user.shipping_address === 'string' ? JSON.parse(user.shipping_address) : user.shipping_address;
+       setForm(f => ({ ...f, ...addr, phone: user.phone || "" }));
+    }
     setCart(JSON.parse(localStorage.getItem("zookeepacart") || "[]"));
-  }, []);
+  }, [user]);
 
   const total = cart.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0);
 
@@ -32,11 +35,28 @@ export default function Checkout() {
     if (cart.length === 0) return;
     setLoading(true);
     const orderNum = "ZK-" + Date.now().toString().slice(-6);
-    localStorage.removeItem("zookeepacart");
-    window.dispatchEvent(new Event("cartUpdated"));
-    setOrderNumber(orderNum);
-    setLoading(false);
-    setSuccess(true);
+    const token = localStorage.getItem('token');
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({
+          order_number: orderNum,
+          customer_email: user.email,
+          customer_name: user.full_name,
+          items: cart,
+          total_amount: total,
+          shipping_address: { street: form.street, city: form.city, state: form.state, zip_code: form.zip_code, country: form.country },
+          phone: form.phone
+        })
+      });
+      if (res.ok) {
+        localStorage.removeItem("zookeepacart");
+        window.dispatchEvent(new Event("cartUpdated"));
+        setOrderNumber(orderNum);
+        setSuccess(true);
+      } else throw new Error("Checkout failed");
+    } catch (err) { alert('Failed to place order'); } finally { setLoading(false); }
   };
 
   if (success) return (

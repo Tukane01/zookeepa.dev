@@ -4,10 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { Package, Search, Eye, BarChart3 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import StockView from "../components/storemanager/StockView";
+import { useAuth } from "@/lib/AuthContext";
 
 const STATUS_COLORS = {
   pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
@@ -23,23 +21,39 @@ export default function StoreManager() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [activeTab, setActiveTab] = useState("orders");
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
-    Promise.resolve({ role: 'store_manager' }).then(u => {
-      if (u.role !== "store_manager" && u.role !== "admin" && u.role !== "super_admin") {
-        navigate(createPageUrl("Home")); return;
-      }
-      return Promise.resolve([]);
-    }).then(res => { 
-      if (res) setOrders(res); 
-    }).catch(() => {})
+    if (user && user.role !== "store_manager" && user.role !== "admin" && user.role !== "super_admin") {
+      navigate(createPageUrl("Home")); 
+      return;
+    }
+    
+    const token = localStorage.getItem('token');
+    fetch('/api/orders', { headers: { 'Authorization': `Bearer ${token}` } })
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+           setOrders(data.map(o => ({
+             ...o,
+             items: typeof o.items === 'string' ? JSON.parse(o.items) : o.items,
+             shipping_address: typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : o.shipping_address
+           })));
+        }
+      })
+      .catch(err => console.error("Failed to load orders:", err))
       .finally(() => setLoading(false));
-  }, []);
+  }, [user, navigate]);
 
   const updateStatus = async (orderId, status) => {
-    setOrders(o => o.map(x => x.id === orderId ? { ...x, status } : x));
-    if (selectedOrder?.id === orderId) setSelectedOrder(o => ({ ...o, status }));
+    try {
+      const token = localStorage.getItem('token');
+      await fetch(`/api/orders/${orderId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ status }) });
+      setOrders(o => o.map(x => x.id === orderId ? { ...x, status } : x));
+      if (selectedOrder?.id === orderId) setSelectedOrder(o => ({ ...o, status }));
+    } catch (err) { console.error("Failed to update status", err); }
   };
 
   const filtered = orders.filter(o => {
@@ -64,17 +78,17 @@ export default function StoreManager() {
         <p className="text-gray-500 text-sm mt-1">Manage orders and monitor inventory</p>
       </div>
 
-      <Tabs defaultValue="orders">
-        <TabsList className="rounded-none bg-gray-100 mb-8">
-          <TabsTrigger value="orders" className="rounded-none data-[state=active]:bg-black data-[state=active]:text-white">
-            <Package className="w-4 h-4 mr-2" /> Orders
-          </TabsTrigger>
-          <TabsTrigger value="stock" className="rounded-none data-[state=active]:bg-black data-[state=active]:text-white">
-            <BarChart3 className="w-4 h-4 mr-2" /> Stock & Pricing
-          </TabsTrigger>
-        </TabsList>
+      <div className="flex bg-gray-100 mb-8 p-1 rounded-md w-max">
+        <button onClick={() => setActiveTab("orders")} className={`flex items-center px-4 py-2 text-sm rounded-md transition-colors ${activeTab === "orders" ? 'bg-white shadow text-black font-medium' : 'text-gray-600 hover:text-gray-900'}`}>
+          <Package className="w-4 h-4 mr-2" /> Orders
+        </button>
+        <button onClick={() => setActiveTab("stock")} className={`flex items-center px-4 py-2 text-sm rounded-md transition-colors ${activeTab === "stock" ? 'bg-white shadow text-black font-medium' : 'text-gray-600 hover:text-gray-900'}`}>
+          <BarChart3 className="w-4 h-4 mr-2" /> Stock & Pricing
+        </button>
+      </div>
 
-        <TabsContent value="orders">
+      {activeTab === "orders" && (
+        <div>
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[
@@ -134,7 +148,7 @@ export default function StoreManager() {
                       </Select>
                     </td>
                     <td className="px-4 py-3">
-                      <Button variant="ghost" size="icon" className="w-8 h-8" onClick={() => setSelectedOrder(order)}><Eye className="w-4 h-4" /></Button>
+                      <button className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-200 text-gray-600" onClick={() => setSelectedOrder(order)}><Eye className="w-4 h-4" /></button>
                     </td>
                   </tr>
                 ))}
@@ -142,12 +156,12 @@ export default function StoreManager() {
               </tbody>
             </table>
           </div>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="stock">
-          <StockView />
-        </TabsContent>
-      </Tabs>
+      {activeTab === "stock" && (
+        <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Stock Management Coming Soon</div>
+      )}
 
       {/* Order Detail Dialog */}
       {selectedOrder && (

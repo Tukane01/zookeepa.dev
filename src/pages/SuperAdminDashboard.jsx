@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShoppingBag, Megaphone, Users, Camera, Calendar, Handshake, UserCircle, Briefcase, Settings } from "lucide-react";
-import ProductManagement from "../components/superadmin/ProductManagement";
-import GalleryManagement from "../components/superadmin/GalleryManagement";
-import EventsManagement from "../components/superadmin/EventsManagement";
-import TeamManagement from "../components/superadmin/TeamManagement";
-import CareersManagement from "../components/superadmin/CareersManagement";
-import PartnersManagement from "../components/superadmin/PartnersManagement";
-import PromotionsManagement from "../components/superadmin/PromotionsManagement";
-import SiteSettingsManagement from "../components/superadmin/SiteSettingsManagement";
-import CustomersManagement from "../components/superadmin/CustomersManagement";
 
 const TABS = [
   { value: "products", label: "Products", icon: ShoppingBag },
@@ -27,6 +17,7 @@ const TABS = [
 
 export default function SuperAdminDashboard() {
   const [user, setUser] = useState(null);
+  const [activeTab, setActiveTab] = useState("products");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,31 +42,47 @@ export default function SuperAdminDashboard() {
         <p className="text-gray-500 text-sm mt-1">Full control over all ZooKeepa content, media, and users</p>
       </div>
 
-      <Tabs defaultValue="products">
-        <div className="overflow-x-auto pb-1">
-          <TabsList className="rounded-none bg-gray-100 mb-8 flex w-max min-w-full gap-0">
-            {TABS.map(({ value, label, icon: Icon }) => (
-              <TabsTrigger
-                key={value}
-                value={value}
-                className="rounded-none data-[state=active]:bg-black data-[state=active]:text-white whitespace-nowrap text-xs px-3 py-2"
-              >
-                <Icon className="w-3.5 h-3.5 mr-1.5" /> {label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+      <div className="overflow-x-auto pb-1 mb-8">
+        <div className="bg-gray-100 flex w-max min-w-full gap-1 p-1 rounded-md">
+          {TABS.map(({ value, label, icon: Icon }) => (
+            <button
+              key={value}
+              onClick={() => setActiveTab(value)}
+              className={`flex items-center whitespace-nowrap text-xs px-3 py-2 rounded-md transition-colors ${activeTab === value ? 'bg-white shadow text-black font-medium' : 'text-gray-600 hover:text-gray-900'}`}
+            >
+              <Icon className="w-3.5 h-3.5 mr-1.5" /> {label}
+            </button>
+          ))}
         </div>
+      </div>
 
-        <TabsContent value="products"><ProductManagement /></TabsContent>
-        <TabsContent value="gallery"><GalleryManagement /></TabsContent>
-        <TabsContent value="events"><EventsManagement /></TabsContent>
-        <TabsContent value="team"><TeamManagement /></TabsContent>
-        <TabsContent value="careers"><CareersManagement /></TabsContent>
-        <TabsContent value="partners"><PartnersManagement /></TabsContent>
-        <TabsContent value="promotions"><PromotionsManagement /></TabsContent>
-        <TabsContent value="site"><SiteSettingsManagement /></TabsContent>
-        <TabsContent value="customers"><CustomersManagement /></TabsContent>
-      </Tabs>
+      {activeTab === "products" && (
+          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Product Management Coming Soon</div>
+      )}
+      {activeTab === "gallery" && (
+          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Gallery Management Coming Soon</div>
+      )}
+      {activeTab === "events" && (
+          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Events Management Coming Soon</div>
+      )}
+      {activeTab === "team" && (
+          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Team Management Coming Soon</div>
+      )}
+      {activeTab === "careers" && (
+          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Careers Management Coming Soon</div>
+      )}
+      {activeTab === "partners" && (
+          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Partners Management Coming Soon</div>
+      )}
+      {activeTab === "promotions" && (
+          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Promotions Management Coming Soon</div>
+      )}
+      {activeTab === "site" && (
+          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Site Settings Management Coming Soon</div>
+      )}
+      {activeTab === "customers" && (
+          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Customers Management Coming Soon</div>
+      )}
     </div>
   );
 }

@@ -2,43 +2,46 @@ import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Package, DollarSign, ShoppingBag } from "lucide-react";
 import { format } from "date-fns";
-import OrderDetailsDialog from "../components/admin/OrderDetailsDialog";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function AdminDashboard() {
-  const [user, setUser] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const queryClient = useQueryClient();
-
-  const loadUser = React.useCallback(async () => {
-    try {
-      const currentUser = { role: 'admin' };
-      if (currentUser.role !== 'admin' && currentUser.role !== 'super_admin') {
-        window.location.href = '/';
-        return;
-      }
-      setUser(currentUser);
-    } catch (error) {
-      window.location.href = '/login';
-    }
-  }, []);
-
-  useEffect(() => {
-    loadUser();
-  }, [loadUser]);
+  const { user } = useAuth();
 
   const { data: orders, isLoading } = useQuery({
     queryKey: ['all-orders'],
-    queryFn: () => Promise.resolve([]),
+    queryFn: async () => {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/orders', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error('Failed to fetch orders');
+      const data = await res.json();
+      return Array.isArray(data) ? data.map(o => ({
+         ...o,
+         items: typeof o.items === 'string' ? JSON.parse(o.items) : o.items,
+         shipping_address: typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : o.shipping_address
+      })) : [];
+    },
     initialData: [],
-    enabled: !!user,
+    enabled: !!user && (user.role === 'admin' || user.role === 'super_admin'),
   });
 
   const updateOrderMutation = useMutation({
-    mutationFn: ({ id, status }) => Promise.resolve(),
+    mutationFn: async ({ id, status }) => {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`/api/orders/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ status })
+      });
+      if (!res.ok) throw new Error("Update failed");
+      return res.json();
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['all-orders'] });
       setSelectedOrder(null);
@@ -122,15 +125,23 @@ export default function AdminDashboard() {
       </div>
 
       {/* Filters */}
-      <Tabs value={statusFilter} onValueChange={setStatusFilter} className="mb-6">
-        <TabsList className="bg-gray-100">
-          <TabsTrigger value="all">All Orders</TabsTrigger>
-          <TabsTrigger value="pending">Pending</TabsTrigger>
-          <TabsTrigger value="processing">Processing</TabsTrigger>
-          <TabsTrigger value="shipped">Shipped</TabsTrigger>
-          <TabsTrigger value="delivered">Delivered</TabsTrigger>
-        </TabsList>
-      </Tabs>
+      <div className="mb-6 flex flex-wrap gap-2 bg-gray-100 p-1 rounded-md w-max">
+        {[
+          { id: "all", label: "All Orders" },
+          { id: "pending", label: "Pending" },
+          { id: "processing", label: "Processing" },
+          { id: "shipped", label: "Shipped" },
+          { id: "delivered", label: "Delivered" }
+        ].map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setStatusFilter(tab.id)}
+            className={`px-4 py-2 text-sm rounded-md transition-colors ${statusFilter === tab.id ? 'bg-white shadow text-black font-medium' : 'text-gray-600 hover:text-gray-900'}`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
       {/* Orders List */}
       <div className="space-y-4">
@@ -181,11 +192,13 @@ export default function AdminDashboard() {
 
       {/* Order Details Dialog */}
       {selectedOrder && (
-        <OrderDetailsDialog
-          order={selectedOrder}
-          onClose={() => setSelectedOrder(null)}
-          onUpdateStatus={(status) => updateOrderMutation.mutate({ id: selectedOrder.id, status })}
-        />
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4">Order #{selectedOrder.order_number}</h2>
+            <p className="mb-6 text-gray-600">Order details management coming soon.</p>
+            <button onClick={() => setSelectedOrder(null)} className="px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800 transition-colors">Close</button>
+          </div>
+        </div>
       )}
     </div>
   );
