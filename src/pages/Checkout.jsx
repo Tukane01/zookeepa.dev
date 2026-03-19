@@ -77,7 +77,7 @@ export default function Checkout() {
       <h1 className="brand-font text-4xl font-semibold mb-10">Checkout</h1>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <form onSubmit={handleSubmit} className="space-y-5">
-          <h2 className="text-lg font-semibold tracking-wider uppercase text-sm">Shipping Information</h2>
+          <h2 className="text-lg font-semibold tracking-wider uppercase">Shipping Information</h2>
           <div>
             <Label className="text-xs tracking-wider uppercase">Street Address</Label>
             <Input value={form.street} onChange={e => setForm({ ...form, street: e.target.value })} required className="rounded-none mt-1" placeholder="123 Main St" />

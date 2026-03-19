@@ -1,4 +1,12 @@
 import React, { useState, useEffect } from "react";
+import HeroSection from "../components/home/HeroSection";
+import GallerySection from "../components/home/GallerySection";
+import EventsSection from "../components/home/EventsSection";
+import PartnersSection from "../components/home/PartnersSection";
+import TeamSection from "../components/home/TeamSection";
+import CareersSection from "../components/home/CareersSection";
+import ContactSection from "../components/home/ContactSection";
+import { galleryAPI, eventsAPI, partnersAPI, teamAPI, careersAPI } from "@/api/apiService";
 
 export default function Home() {
   const [gallery, setGallery] = useState([]);
@@ -9,38 +17,47 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([
-      Promise.resolve([]),
-      Promise.resolve([]),
-      Promise.resolve([]),
-      Promise.resolve([]),
-      Promise.resolve([]),
-    ]).then(([g, e, p, t, c]) => {
-      setGallery(g);
-      setEvents(e);
-      setPartners(p);
-      setTeam(t);
-      setCareers(c);
-    }).catch(() => {}).finally(() => setLoading(false));
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [galleryData, eventsData, partnersData, teamData, careersData] = await Promise.all([
+          galleryAPI.getAll(),
+          eventsAPI.getAll(),
+          partnersAPI.getAll(),
+          teamAPI.getAll(),
+          careersAPI.getAll(),
+        ]);
+
+        setGallery(galleryData);
+        setEvents(eventsData);
+        setPartners(partnersData);
+        setTeam(teamData);
+        setCareers(careersData);
+      } catch (error) {
+        console.error('Error fetching home data:', error);
+        // Set empty arrays on error to prevent crashes
+        setGallery([]);
+        setEvents([]);
+        setPartners([]);
+        setTeam([]);
+        setCareers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
     <div className="min-h-screen">
-      <div className="h-[60vh] flex items-center justify-center bg-gray-100">
-        <h1 className="text-4xl font-bold text-gray-400">Hero Section Coming Soon</h1>
-      </div>
-      <div className="py-20 px-4 text-center">
-        <h2 className="text-2xl font-semibold mb-4">Gallery Section</h2>
-        <p className="text-gray-500">Coming Soon</p>
-      </div>
-      <div className="py-20 px-4 text-center bg-gray-50">
-        <h2 className="text-2xl font-semibold mb-4">Events Section</h2>
-        <p className="text-gray-500">Coming Soon</p>
-      </div>
-      <div className="py-20 px-4 text-center">
-        <h2 className="text-2xl font-semibold mb-4">Contact Section</h2>
-        <p className="text-gray-500">Coming Soon</p>
-      </div>
+      <HeroSection />
+      <GallerySection items={gallery} />
+      <EventsSection events={events} />
+      <PartnersSection partners={partners} />
+      <TeamSection members={team} />
+      <CareersSection careers={careers} />
+      <ContactSection />
     </div>
   );
 }

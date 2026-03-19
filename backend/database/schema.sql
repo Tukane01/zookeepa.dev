@@ -1,4 +1,16 @@
--- 1. Careers Table
+-- 1. Users Table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    full_name VARCHAR(255),
+    role VARCHAR(50) DEFAULT 'user' CHECK (role IN ('user', 'admin', 'super_admin', 'store_manager')),
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Careers Table
 CREATE TABLE careers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -11,7 +23,7 @@ CREATE TABLE careers (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Site Settings Table
+-- 3. Site Settings Table
 CREATE TABLE site_settings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     setting_key VARCHAR(50) UNIQUE NOT NULL DEFAULT 'main',

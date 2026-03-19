@@ -38,7 +38,7 @@ export default function ProductCard({ product }) {
             </h3>
             <p className="text-sm text-gray-500 line-clamp-2">{product.description}</p>
             <div className="flex items-center justify-between">
-              <p className="text-xl font-bold text-black">${product.price?.toFixed(2)}</p>
+              <p className="text-xl font-bold text-black">R{product.price?.toFixed(2)}</p>
               {product.colors && product.colors.length > 0 && (
                 <div className="flex gap-1">
                   {product.colors.slice(0, 4).map((color, idx) => (

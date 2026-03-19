@@ -44,8 +44,8 @@ router.post('/', authenticateToken, authorizeRoles('admin', 'super_admin'), asyn
   }
 });
 
-// PUT /api/products/:id - Admin & Super Admin only
-router.put('/:id', authenticateToken, authorizeRoles('admin', 'super_admin'), async (req, res) => {
+// PUT /api/products/:id - Super Admin only
+router.put('/:id', authenticateToken, authorizeRoles('super_admin'), async (req, res) => {
   try {
     const { name, description, price, sale_price, category, sizes, colors, image_url, stock, is_featured, is_active } = req.body;
     await pool.query(

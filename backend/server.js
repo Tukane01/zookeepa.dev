@@ -19,12 +19,26 @@ const authRoutes = require('./auth');
 const userRoutes = require('./users');
 const orderRoutes = require('./orders');
 const productRoutes = require('./products');
+const careersRoutes = require('./careers');
+const eventsRoutes = require('./events');
+const galleryRoutes = require('./gallery');
+const partnersRoutes = require('./partners');
+const teamRoutes = require('./team');
+const promotionsRoutes = require('./promotions');
+const siteSettingsRoutes = require('./site-settings');
 
 // Mount Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/careers', careersRoutes);
+app.use('/api/events', eventsRoutes);
+app.use('/api/gallery', galleryRoutes);
+app.use('/api/partners', partnersRoutes);
+app.use('/api/team', teamRoutes);
+app.use('/api/promotions', promotionsRoutes);
+app.use('/api/site-settings', siteSettingsRoutes);
 
 const PORT = process.env.PORT || 5000;
 

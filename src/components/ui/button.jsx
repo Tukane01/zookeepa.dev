@@ -1,13 +1,18 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {
-  variant?: "default" | "outline";
-  size?: "default" | "sm" | "lg";
-}
+/**
+ * @typedef {Object} ButtonProps
+ * @property {string} [className]
+ * @property {"default" | "outline"} [variant]
+ * @property {"default" | "sm" | "lg"} [size]
+ * @property {React.ReactNode} children
+ * @property {string} [type]
+ */
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "default", size = "default", ...props }, ref) => {
+/** @type {React.ForwardRefExoticComponent<ButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>>} */
+const Button = React.forwardRef(
+  ({ className, variant = "default", size = "default", children, ...props }, ref) => {
     const variantClass =
       variant === "outline"
         ? "border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground"
@@ -30,7 +35,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           className
         )}
         {...props}
-      />
+      >
+        {children}
+      </button>
     );
   }
 );

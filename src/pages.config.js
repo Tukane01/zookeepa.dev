@@ -53,7 +53,7 @@ const PAGES = {};
 import __Layout from './Layout.jsx';
 
 export const pagesConfig = {
-    mainPage: "Shop",
+    mainPage: "Home",
     Pages: PAGES,
     Layout: __Layout,
 };
@@ -69,6 +69,8 @@ import Profile from './pages/Profile';
 import Shop from './pages/Shop';
 import StoreManager from './pages/StoreManager';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 // Populate the PAGES object after imports.
 // This ensures that when other modules import this file, they get a reference
@@ -78,4 +80,5 @@ Object.assign(PAGES, {
     "Checkout": Checkout, "Home": Home, "MyOrders": MyOrders,
     "ProductDetail": ProductDetail, "Profile": Profile, "Shop": Shop,
     "StoreManager": StoreManager, "SuperAdminDashboard": SuperAdminDashboard,
+    "Login": Login, "Register": Register,
 });

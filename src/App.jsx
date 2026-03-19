@@ -13,7 +13,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Home from '@/pages/Home';
 
 const { Pages = {}, Layout, mainPage } = pagesConfig || {};
-const mainPageKey = "Home";
+const mainPageKey = mainPage || "Home";
 const MainPage = Pages[mainPageKey] || Home;
 
 setupIframeMessaging();
