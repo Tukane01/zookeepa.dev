@@ -1,17 +1,11 @@
 import React from "react";
 import { User } from "lucide-react";
 
-const FALLBACK_TEAM = [
-  { name: "Sipho Dlamini", role: "Founder & Creative Director", bio: "Visionary behind the ZooKeepa brand, with 10+ years in African fashion.", image_url: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?w=400&q=80" },
-  { name: "Naledi Khumalo", role: "Head of Design", bio: "Award-winning designer merging traditional African patterns with contemporary cuts.", image_url: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&q=80" },
-  { name: "Thabo Mokoena", role: "Operations Director", bio: "Ensuring every ZooKeepa product reaches you with quality and care.", image_url: "https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=400&q=80" },
-  { name: "Lerato Sithole", role: "Marketing & Brand Manager", bio: "Spreading the ZooKeepa story across Africa and beyond.", image_url: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=400&q=80" },
-  { name: "Kagiso Molefe", role: "Lead Developer", bio: "Building the digital experience that connects our community worldwide.", image_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" },
-  { name: "Zanele Nkosi", role: "Customer Experience", bio: "Your happiness is our mission — Zanele makes sure every customer feels valued.", image_url: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&q=80" },
-];
-
 export default function TeamSection({ members }) {
-  const display = members?.length > 0 ? members : FALLBACK_TEAM;
+  const display = members?.length > 0 ? members.map(member => ({
+    ...member,
+    image_url: member.image_id ? `/api/images/${member.image_id}` : null
+  })) : [];
 
   return (
     <section id="team" className="py-20 bg-white">

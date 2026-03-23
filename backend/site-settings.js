@@ -12,8 +12,8 @@ router.get('/', async (req, res) => {
     res.json(rows[0]);
   } catch (error) {
     console.error('Fetch site settings error:', error.message);
-    if (error?.code === 'ER_NO_SUCH_TABLE') return res.json({});
-    res.status(500).json({ message: 'Server error fetching site settings' });
+    // Gracefully return empty object on any database error to prevent frontend crashes
+    res.json({});
   }
 });
 
@@ -30,21 +30,21 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST /api/site-settings - Super Admin only
-router.post('/', authenticateToken, authorizeRoles('super_admin'), async (req, res) => {
+// POST /api/site-settings - Admin & Super Admin only
+router.post('/', authenticateToken, authorizeRoles('admin', 'super_admin'), async (req, res) => {
   try {
     const {
-      hero_image_url, hero_images, hero_title, hero_subtitle, hero_cta_text,
+      hero_image_id, hero_images, hero_title, hero_subtitle, hero_cta_text,
       contact_address, contact_city, contact_province, contact_zip, contact_country,
       contact_phone, contact_email, contact_hours, map_lat, map_lng
     } = req.body;
 
     const [result] = await pool.query(
-      `INSERT INTO site_settings (hero_image_url, hero_images, hero_title, hero_subtitle, hero_cta_text, 
-       contact_address, contact_city, contact_province, contact_zip, contact_country, 
-       contact_phone, contact_email, contact_hours, map_lat, map_lng) 
+      `INSERT INTO site_settings (hero_image_id, hero_images, hero_title, hero_subtitle, hero_cta_text,
+       contact_address, contact_city, contact_province, contact_zip, contact_country,
+       contact_phone, contact_email, contact_hours, map_lat, map_lng)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [hero_image_url, JSON.stringify(hero_images || []), hero_title, hero_subtitle, hero_cta_text,
+      [hero_image_id, JSON.stringify(hero_images || []), hero_title, hero_subtitle, hero_cta_text,
        contact_address, contact_city, contact_province, contact_zip, contact_country || 'South Africa',
        contact_phone, contact_email, contact_hours, map_lat || -26.2041, map_lng || 28.0473]
     );
@@ -55,20 +55,20 @@ router.post('/', authenticateToken, authorizeRoles('super_admin'), async (req, r
   }
 });
 
-// PUT /api/site-settings/:id - Super Admin only
-router.put('/:id', authenticateToken, authorizeRoles('super_admin'), async (req, res) => {
+// PUT /api/site-settings/:id - Admin & Super Admin only
+router.put('/:id', authenticateToken, authorizeRoles('admin', 'super_admin'), async (req, res) => {
   try {
     const {
-      hero_image_url, hero_images, hero_title, hero_subtitle, hero_cta_text,
+      hero_image_id, hero_images, hero_title, hero_subtitle, hero_cta_text,
       contact_address, contact_city, contact_province, contact_zip, contact_country,
       contact_phone, contact_email, contact_hours, map_lat, map_lng
     } = req.body;
 
     await pool.query(
-      `UPDATE site_settings SET hero_image_url=?, hero_images=?, hero_title=?, hero_subtitle=?, hero_cta_text=?, 
-       contact_address=?, contact_city=?, contact_province=?, contact_zip=?, contact_country=?, 
+      `UPDATE site_settings SET hero_image_id=?, hero_images=?, hero_title=?, hero_subtitle=?, hero_cta_text=?,
+       contact_address=?, contact_city=?, contact_province=?, contact_zip=?, contact_country=?,
        contact_phone=?, contact_email=?, contact_hours=?, map_lat=?, map_lng=? WHERE id=?`,
-      [hero_image_url, JSON.stringify(hero_images || []), hero_title, hero_subtitle, hero_cta_text,
+      [hero_image_id, JSON.stringify(hero_images || []), hero_title, hero_subtitle, hero_cta_text,
        contact_address, contact_city, contact_province, contact_zip, contact_country,
        contact_phone, contact_email, contact_hours, map_lat, map_lng, req.params.id]
     );

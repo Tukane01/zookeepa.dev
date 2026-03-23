@@ -7,12 +7,17 @@ const router = express.Router();
 // GET /api/partners - Public endpoint to view all partners
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM partners ORDER BY created_at DESC');
+    const [rows] = await pool.query(`
+      SELECT p.*, i.filename, i.content_type, i.alt_text
+      FROM partners p
+      LEFT JOIN images i ON p.logo_id = i.id
+      ORDER BY p.created_at DESC
+    `);
     res.json(rows);
   } catch (error) {
     console.error('Fetch partners error:', error.message);
-    if (error?.code === 'ER_NO_SUCH_TABLE') return res.json([]);
-    res.status(500).json({ message: 'Server error fetching partners' });
+    // Gracefully return empty array on any database error to prevent frontend crashes
+    res.json([]);
   }
 });
 
@@ -32,14 +37,14 @@ router.get('/:id', async (req, res) => {
 // POST /api/partners - Admin & Super Admin only
 router.post('/', authenticateToken, authorizeRoles('admin', 'super_admin'), async (req, res) => {
   try {
-    const { name, logo_url, website_url, description } = req.body;
+    const { name, logo_id, website_url, description } = req.body;
     const [result] = await pool.query(
-      'INSERT INTO partners (name, logo_url, website_url, description) VALUES (?, ?, ?, ?)',
-      [name, logo_url, website_url, description]
+      'INSERT INTO partners (name, logo_id, website_url, description) VALUES (?, ?, ?, ?)',
+      [name, logo_id, website_url, description]
     );
     res.status(201).json({ message: 'Partner created', id: result.insertId });
   } catch (error) {
-    console.error('Create partner error:', error.message);
+    console.error('Create partner error:', error);
     res.status(500).json({ message: 'Server error creating partner' });
   }
 });
@@ -47,14 +52,14 @@ router.post('/', authenticateToken, authorizeRoles('admin', 'super_admin'), asyn
 // PUT /api/partners/:id - Admin & Super Admin only
 router.put('/:id', authenticateToken, authorizeRoles('admin', 'super_admin'), async (req, res) => {
   try {
-    const { name, logo_url, website_url, description } = req.body;
+    const { name, logo_id, website_url, description } = req.body;
     await pool.query(
-      'UPDATE partners SET name=?, logo_url=?, website_url=?, description=? WHERE id=?',
-      [name, logo_url, website_url, description, req.params.id]
+      'UPDATE partners SET name=?, logo_id=?, website_url=?, description=? WHERE id=?',
+      [name, logo_id, website_url, description, req.params.id]
     );
     res.json({ message: `Partner ${req.params.id} updated` });
   } catch (error) {
-    console.error('Update partner error:', error.message);
+    console.error('Update partner error:', error);
     res.status(500).json({ message: 'Server error updating partner' });
   }
 });

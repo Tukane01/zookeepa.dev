@@ -26,6 +26,7 @@ const partnersRoutes = require('./partners');
 const teamRoutes = require('./team');
 const promotionsRoutes = require('./promotions');
 const siteSettingsRoutes = require('./site-settings');
+const imagesRoutes = require('./images');
 
 // Mount Routes
 app.use('/api/auth', authRoutes);
@@ -39,6 +40,7 @@ app.use('/api/partners', partnersRoutes);
 app.use('/api/team', teamRoutes);
 app.use('/api/promotions', promotionsRoutes);
 app.use('/api/site-settings', siteSettingsRoutes);
+app.use('/api/images', imagesRoutes);
 
 const PORT = process.env.PORT || 5000;
 

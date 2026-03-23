@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Plus, Pencil, Trash2, Handshake } from "lucide-react";
 
 export default function PartnersManagement() {
@@ -57,7 +57,12 @@ export default function PartnersManagement() {
 
       <Dialog open={dialog} onOpenChange={setDialog}>
         <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>{editing ? "Edit Partner" : "Add Partner"}</DialogTitle></DialogHeader>
+          <DialogHeader>
+            <DialogTitle>{editing ? "Edit Partner" : "Add Partner"}</DialogTitle>
+            <DialogDescription>
+              {editing ? "Update partner information and logo." : "Add a new partner with their logo and website."}
+            </DialogDescription>
+          </DialogHeader>
           <div className="space-y-3 py-2">
             <div><Label className="text-xs uppercase tracking-wider">Partner Name *</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="rounded-none mt-1" /></div>
             <div><Label className="text-xs uppercase tracking-wider">Description</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className="rounded-none mt-1" rows={2} /></div>

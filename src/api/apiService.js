@@ -57,7 +57,25 @@ export const usersAPI = {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
+  deleteMyAccount: () =>
+    apiCall('/users/profile', {
+      method: 'DELETE',
+    }),
   getAllUsers: () => apiCall('/users'),
+  createUser: (data) =>
+    apiCall('/users', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  updateUser: (id, data) =>
+    apiCall(`/users/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+  deleteUser: (id) =>
+    apiCall(`/users/${id}`, {
+      method: 'DELETE',
+    }),
 };
 
 // ============ PRODUCTS API ============

@@ -40,15 +40,15 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       host: 'localhost', // Bind to localhost only
-      port: 5173,
-      strictPort: false,
+      port: 5174,
+      strictPort: true,
       // Allow all hosts - essential for Modal tunnel URLs
       allowedHosts: true,
       proxy: {
         '/api': {
           target: 'http://localhost:5000', // Proxies to Express Backend
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, '')
+          // Remove the rewrite - keep /api prefix for backend
         }
       },
       watch: {

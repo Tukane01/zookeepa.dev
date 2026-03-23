@@ -2,17 +2,11 @@
 import React from "react";
 import { Handshake } from "lucide-react";
 
-const FALLBACK_PARTNERS = [
-  { name: "African Fashion Council", description: "Promoting African design globally" },
-  { name: "Soweto Creatives Hub", description: "Empowering township entrepreneurs" },
-  { name: "SA Cotton Board", description: "Sustainable local fabric sourcing" },
-  { name: "Jozi Style Magazine", description: "Johannesburg's #1 fashion publication" },
-  { name: "Nkosi Textiles", description: "Premium African fabric supplier" },
-  { name: "Ubuntu Foundation", description: "Community development partner" },
-];
-
 export default function PartnersSection({ partners }) {
-  const display = partners?.length > 0 ? partners : FALLBACK_PARTNERS;
+  const display = partners?.length > 0 ? partners.map(partner => ({
+    ...partner,
+    logo_url: partner.logo_id ? `/api/images/${partner.logo_id}` : null
+  })) : [];
 
   return (
     <section id="partners" className="py-20 bg-gray-50">

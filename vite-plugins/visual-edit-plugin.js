@@ -94,11 +94,9 @@ export function visualEditPlugin() {
 		name: 'visual-edit-transform',
 		enforce: 'pre',
 		order: 'pre',
-		// Inject Tailwind CDN for visual editing capabilities
+		// Tailwind CSS is already installed via PostCSS, no need for CDN
 		transformIndexHtml(html) {
-			// Inject the Tailwind CSS CDN script right before the closing </head> tag
-			const tailwindScript = `    <!-- Tailwind CSS CDN for visual editing -->\n    <script src="https://cdn.tailwindcss.com"></script>\n  `;
-			return html.replace('</head>', tailwindScript + '</head>');
+			return html;
 		},
 		transform(code, id) {
 			// Skip node_modules and visual-edit-agent itself

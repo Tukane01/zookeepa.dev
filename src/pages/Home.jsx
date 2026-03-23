@@ -6,10 +6,9 @@ import PartnersSection from "../components/home/PartnersSection";
 import TeamSection from "../components/home/TeamSection";
 import CareersSection from "../components/home/CareersSection";
 import ContactSection from "../components/home/ContactSection";
-import { galleryAPI, eventsAPI, partnersAPI, teamAPI, careersAPI } from "@/api/apiService";
+import { eventsAPI, partnersAPI, teamAPI, careersAPI } from "@/api/apiService";
 
 export default function Home() {
-  const [gallery, setGallery] = useState([]);
   const [events, setEvents] = useState([]);
   const [partners, setPartners] = useState([]);
   const [team, setTeam] = useState([]);
@@ -20,15 +19,13 @@ export default function Home() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [galleryData, eventsData, partnersData, teamData, careersData] = await Promise.all([
-          galleryAPI.getAll(),
+        const [eventsData, partnersData, teamData, careersData] = await Promise.all([
           eventsAPI.getAll(),
           partnersAPI.getAll(),
           teamAPI.getAll(),
           careersAPI.getAll(),
         ]);
 
-        setGallery(galleryData);
         setEvents(eventsData);
         setPartners(partnersData);
         setTeam(teamData);
@@ -36,7 +33,6 @@ export default function Home() {
       } catch (error) {
         console.error('Error fetching home data:', error);
         // Set empty arrays on error to prevent crashes
-        setGallery([]);
         setEvents([]);
         setPartners([]);
         setTeam([]);
@@ -52,7 +48,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <HeroSection />
-      <GallerySection items={gallery} />
+      <GallerySection />
       <EventsSection events={events} />
       <PartnersSection partners={partners} />
       <TeamSection members={team} />

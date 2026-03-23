@@ -2,16 +2,9 @@ import React, { useState } from "react";
 import { Briefcase, MapPin, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const FALLBACK_CAREERS = [
-  { title: "Junior Fashion Designer", department: "Design", type: "Full-time", location: "Johannesburg", description: "We're looking for a passionate junior designer to join our creative team. Must have knowledge of garment construction and a fresh eye for African-inspired aesthetics." },
-  { title: "Social Media Manager", department: "Marketing", type: "Full-time", location: "Johannesburg / Remote", description: "Grow and manage ZooKeepa's social presence. Content creation, community management, and influencer coordination." },
-  { title: "Retail Sales Associate", department: "Sales", type: "Part-time", location: "Sandton, Johannesburg", description: "Be the face of ZooKeepa in-store. Passionate about fashion and delivering outstanding customer service." },
-  { title: "Logistics Coordinator", department: "Operations", type: "Contract", location: "Johannesburg", description: "Manage order fulfilment, courier relationships, and stock movements." },
-];
-
 export default function CareersSection({ careers }) {
   const [expanded, setExpanded] = useState(null);
-  const display = careers?.length > 0 ? careers : FALLBACK_CAREERS;
+  const display = careers?.length > 0 ? careers : [];
 
   const TYPE_COLORS = {
     "Full-time": "bg-green-100 text-green-800",

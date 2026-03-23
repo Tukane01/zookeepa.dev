@@ -5,12 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Trash2, Image, MapPin, Phone } from "lucide-react";
+import ImageUpload from "@/components/ui/ImageUpload";
 
 export default function SiteSettingsManagement() {
   const [settings, setSettings] = useState(null);
   const [form, setForm] = useState({
     hero_title: "", hero_subtitle: "", hero_cta_text: "",
-    hero_image_url: "", hero_images: [],
+    hero_image_id: null, hero_images: [],
     contact_address: "", contact_city: "", contact_province: "", contact_zip: "",
     contact_country: "South Africa", contact_phone: "", contact_email: "", contact_hours: "",
     map_lat: -26.2041, map_lng: 28.0473
@@ -18,30 +19,72 @@ export default function SiteSettingsManagement() {
   const [newImageUrl, setNewImageUrl] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => { load(); }, []);
 
   const load = async () => {
-    const arr = [];
-    if (arr.length > 0) {
-      const s = arr[0]; setSettings(s);
-      setForm({
-        hero_title: s.hero_title || "", hero_subtitle: s.hero_subtitle || "", hero_cta_text: s.hero_cta_text || "",
-        hero_image_url: s.hero_image_url || "", hero_images: s.hero_images || [],
-        contact_address: s.contact_address || "", contact_city: s.contact_city || "",
-        contact_province: s.contact_province || "", contact_zip: s.contact_zip || "",
-        contact_country: s.contact_country || "South Africa", contact_phone: s.contact_phone || "",
-        contact_email: s.contact_email || "", contact_hours: s.contact_hours || "",
-        map_lat: s.map_lat || -26.2041, map_lng: s.map_lng || 28.0473
+    try {
+      const response = await fetch('/api/site-settings', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
       });
+      const data = await response.json();
+      if (data && data.length > 0) {
+        const s = data[0];
+        setSettings(s);
+        setForm({
+          hero_title: s.hero_title || "",
+          hero_subtitle: s.hero_subtitle || "",
+          hero_cta_text: s.hero_cta_text || "",
+          hero_image_id: s.hero_image_id || null,
+          hero_images: s.hero_images || [],
+          contact_address: s.contact_address || "",
+          contact_city: s.contact_city || "",
+          contact_province: s.contact_province || "",
+          contact_zip: s.contact_zip || "",
+          contact_country: s.contact_country || "South Africa",
+          contact_phone: s.contact_phone || "",
+          contact_email: s.contact_email || "",
+          contact_hours: s.contact_hours || "",
+          map_lat: s.map_lat || -26.2041,
+          map_lng: s.map_lng || 28.0473
+        });
+      }
+    } catch (error) {
+      console.error('Failed to load settings:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const save = async () => {
     setSaving(true);
-    if (settings) { setSettings({...settings, ...form}) }
-    else { const c = { key: "main", ...form }; setSettings(c); }
-    setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 2500);
+    try {
+      const method = settings ? 'PUT' : 'POST';
+      const url = settings ? `/api/site-settings/${settings.id}` : '/api/site-settings';
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(form)
+      });
+
+      if (!response.ok) throw new Error('Save failed');
+
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+      await load(); // Reload to get updated data
+    } catch (error) {
+      console.error('Save error:', error);
+      alert('Failed to save settings');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const addSlide = () => {
@@ -71,18 +114,27 @@ export default function SiteSettingsManagement() {
           </div>
 
           <div>
+            <h3 className="font-semibold mb-3">Hero Background Image</h3>
+            <ImageUpload
+              onImageUploaded={(imageData) => {
+                if (imageData) {
+                  setForm({ ...form, hero_image_id: imageData.id });
+                } else {
+                  setForm({ ...form, hero_image_id: null });
+                }
+              }}
+              currentImageId={form.hero_image_id}
+              altText="Hero background"
+            />
+          </div>
+
+          <div>
             <h3 className="font-semibold mb-3">Slideshow Images</h3>
             <p className="text-xs text-gray-500 mb-3">Add multiple images to create a hero slideshow. They will auto-advance every 5 seconds.</p>
             <div className="flex gap-2 mb-4">
               <Input value={newImageUrl} onChange={e => setNewImageUrl(e.target.value)} className="rounded-none flex-1" placeholder="https://image-url.com/photo.jpg" onKeyDown={e => e.key === "Enter" && addSlide()} />
               <Button onClick={addSlide} className="bg-black text-white rounded-none"><Plus className="w-4 h-4 mr-1" /> Add</Button>
             </div>
-            {form.hero_images.length === 0 && (
-              <div>
-                <p className="text-xs text-gray-400 mb-3">No slideshow images. Using fallback image URL:</p>
-                <div><Label className="text-xs uppercase tracking-wider">Fallback Hero Image URL</Label><Input value={form.hero_image_url} onChange={e => setForm({ ...form, hero_image_url: e.target.value })} className="rounded-none mt-1" placeholder="https://..." /></div>
-              </div>
-            )}
             <div className="space-y-2">
               {form.hero_images.map((url, i) => (
                 <div key={i} className="flex items-center gap-3 border border-gray-200 p-2">

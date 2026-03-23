@@ -23,12 +23,22 @@ CREATE TABLE careers (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 2.5 Images Table (Centralized image storage)
+CREATE TABLE images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    image_data LONGBLOB NOT NULL,
+    filename VARCHAR(255),
+    content_type VARCHAR(100),
+    alt_text TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- 3. Site Settings Table
 CREATE TABLE site_settings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     setting_key VARCHAR(50) UNIQUE NOT NULL DEFAULT 'main',
-    hero_image_url TEXT,
-    hero_images JSON, -- Array of strings
+    hero_image_id INT,
+    hero_images JSON, -- Array of image IDs
     hero_title VARCHAR(255),
     hero_subtitle TEXT,
     hero_cta_text VARCHAR(100),
@@ -43,18 +53,20 @@ CREATE TABLE site_settings (
     map_lat NUMERIC(10, 6) DEFAULT -26.2041,
     map_lng NUMERIC(10, 6) DEFAULT 28.0473,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (hero_image_id) REFERENCES images(id)
 );
 
 -- 3. Partners Table
 CREATE TABLE partners (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    logo_url TEXT,
+    logo_id INT,
     website_url TEXT,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (logo_id) REFERENCES images(id)
 );
 
 -- 4. Team Members Table
@@ -63,10 +75,11 @@ CREATE TABLE team_members (
     name VARCHAR(255) NOT NULL,
     role VARCHAR(255) NOT NULL,
     bio TEXT,
-    image_url TEXT,
+    image_id INT,
     sort_order INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (image_id) REFERENCES images(id)
 );
 
 -- 5. Promotions Table
@@ -94,13 +107,14 @@ CREATE TABLE products (
     category VARCHAR(50) NOT NULL CHECK (category IN ('tops', 'bottoms', 'dresses', 'outerwear', 'accessories', 'shoes')),
     sizes JSON, -- Array of strings
     colors JSON, -- Array of strings
-    image_url TEXT,
-    additional_images JSON, -- Array of strings
+    image_id INT,
+    additional_images JSON, -- Array of image IDs
     stock INTEGER DEFAULT 0,
     is_featured BOOLEAN DEFAULT FALSE,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (image_id) REFERENCES images(id)
 );
 
 -- 7. Orders Table
@@ -126,18 +140,20 @@ CREATE TABLE events (
     description TEXT,
     date DATE,
     location VARCHAR(255),
-    image_url TEXT,
+    image_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (image_id) REFERENCES images(id)
 );
 
 -- 9. Gallery Items Table
 CREATE TABLE gallery_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    image_url TEXT NOT NULL,
+    image_id INT,
     caption TEXT,
     category VARCHAR(100),
     sort_order INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (image_id) REFERENCES images(id)
 );

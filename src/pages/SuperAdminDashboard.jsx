@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
-import { ShoppingBag, Megaphone, Users, Camera, Calendar, Handshake, UserCircle, Briefcase, Settings } from "lucide-react";
+import { ShoppingBag, Megaphone, Users, Camera, Calendar, Handshake, UserCircle, Briefcase, Settings, Package } from "lucide-react";
+
+// Import all management components
+import ProductManagement from "@/components/superadmin/ProductManagement";
+import GalleryManagement from "@/components/superadmin/GalleryManagement";
+import EventsManagement from "@/components/superadmin/EventsManagement";
+import TeamManagement from "@/components/superadmin/TeamManagement";
+import CareersManagement from "@/components/superadmin/CareersManagement";
+import PartnersManagement from "@/components/superadmin/PartnersManagement";
+import PromotionsManagement from "@/components/superadmin/PromotionsManagement";
+import SiteSettingsManagement from "@/components/superadmin/SiteSettingsManagement";
+import UserManagement from "@/components/superadmin/UserManagement";
+import { useAuth } from "@/lib/AuthContext";
 
 const TABS = [
   { value: "products", label: "Products", icon: ShoppingBag },
+  { value: "orders", label: "Orders", icon: Package },
   { value: "gallery", label: "Gallery", icon: Camera },
   { value: "events", label: "Events", icon: Calendar },
   { value: "team", label: "Team", icon: UserCircle },
@@ -16,18 +29,16 @@ const TABS = [
 ];
 
 export default function SuperAdminDashboard() {
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("products");
   const navigate = useNavigate();
 
   useEffect(() => {
-    Promise.resolve({ role: 'super_admin' }).then(u => {
-      if (u.role !== "admin" && u.role !== "super_admin") {
-        navigate(createPageUrl("Home")); return;
-      }
-      setUser(u);
-    }).catch(() => window.location.href = '/login');
-  }, []);
+    if (!user) return;
+    if (user.role !== "admin" && user.role !== "super_admin") {
+      navigate(createPageUrl("Home"));
+    }
+  }, [user, navigate]);
 
   if (!user) return (
     <div className="min-h-[60vh] flex items-center justify-center">
@@ -56,33 +67,129 @@ export default function SuperAdminDashboard() {
         </div>
       </div>
 
-      {activeTab === "products" && (
-          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Product Management Coming Soon</div>
-      )}
-      {activeTab === "gallery" && (
-          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Gallery Management Coming Soon</div>
-      )}
-      {activeTab === "events" && (
-          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Events Management Coming Soon</div>
-      )}
-      {activeTab === "team" && (
-          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Team Management Coming Soon</div>
-      )}
-      {activeTab === "careers" && (
-          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Careers Management Coming Soon</div>
-      )}
-      {activeTab === "partners" && (
-          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Partners Management Coming Soon</div>
-      )}
-      {activeTab === "promotions" && (
-          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Promotions Management Coming Soon</div>
-      )}
-      {activeTab === "site" && (
-          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Site Settings Management Coming Soon</div>
-      )}
-      {activeTab === "customers" && (
-          <div className="p-8 text-center text-gray-500 border border-dashed border-gray-300 mt-4">Customers Management Coming Soon</div>
-      )}
+      {activeTab === "products" && <ProductManagement />}
+      {activeTab === "orders" && <OrderManagement />}
+      {activeTab === "gallery" && <GalleryManagement />}
+      {activeTab === "events" && <EventsManagement />}
+      {activeTab === "team" && <TeamManagement />}
+      {activeTab === "careers" && <CareersManagement />}
+      {activeTab === "partners" && <PartnersManagement />}
+      {activeTab === "promotions" && <PromotionsManagement />}
+      {activeTab === "site" && <SiteSettingsManagement />}
+      {activeTab === "customers" && <UserManagement />}
+    </div>
+  );
+}
+
+// Simple Order Management Component
+function OrderManagement() {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadOrders();
+  }, []);
+
+  const loadOrders = async () => {
+    try {
+      const response = await fetch('/api/orders', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setOrders(data);
+      }
+    } catch (error) {
+      console.error('Failed to load orders:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      const response = await fetch(`/api/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (response.ok) {
+        loadOrders(); // Reload orders
+      }
+    } catch (error) {
+      console.error('Failed to update order status:', error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-semibold">Order Management</h2>
+        <div className="text-sm text-gray-500">
+          {orders.length} total orders
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg border shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order ID</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {orders.map((order) => (
+                <tr key={order.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 text-sm font-medium">#{order.id}</td>
+                  <td className="px-4 py-3 text-sm">{order.customer_email}</td>
+                  <td className="px-4 py-3 text-sm">
+                    {new Date(order.created_at).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-3 text-sm">R{order.total_amount}</td>
+                  <td className="px-4 py-3 text-sm">
+                    <select
+                      value={order.status}
+                      onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                      className="text-xs border rounded px-2 py-1"
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="processing">Processing</option>
+                      <option value="shipped">Shipped</option>
+                      <option value="delivered">Delivered</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  </td>
+                  <td className="px-4 py-3 text-sm">
+                    <button
+                      onClick={() => {/* Open order details modal */}}
+                      className="text-blue-600 hover:text-blue-800 text-sm"
+                    >
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

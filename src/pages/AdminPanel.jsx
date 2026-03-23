@@ -38,8 +38,8 @@ export default function AdminPanel() {
     if (user.role !== "admin" && user.role !== "super_admin") { navigate(createPageUrl("Shop")); return; }
     Promise.all([
       fetch('/api/products').then(r => r.ok ? r.json() : []),
-      Promise.resolve([]),
-      Promise.resolve([])
+      fetch('/api/promotions').then(r => r.ok ? r.json() : []),
+      fetch('/api/site-settings').then(r => r.ok ? r.json() : [])
     ]).then((res) => {
       if (!res) return;
       const [prods, promos, siteArr] = res;

@@ -7,12 +7,17 @@ import { Input } from '@/components/ui/input';
 
 export default function Register() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  if (isAuthenticated) {
+    navigate('/');
+    return null;
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();

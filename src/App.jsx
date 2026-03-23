@@ -11,6 +11,7 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Home from '@/pages/Home';
+import RouteGuard from '@/components/RouteGuard';
 
 const { Pages = {}, Layout, mainPage } = pagesConfig || {};
 const mainPageKey = mainPage || "Home";
@@ -45,13 +46,61 @@ const AuthenticatedApp = () => {
     }
   }
 
+  const roleMap = {
+    AdminDashboard: ['admin', 'super_admin'],
+    AdminPanel: ['admin', 'super_admin'],
+    Cart: ['user', 'admin', 'super_admin'],
+    Checkout: ['user', 'admin', 'super_admin'],
+    MyOrders: ['user', 'admin', 'super_admin'],
+    Profile: ['user', 'admin', 'super_admin'],
+    StoreManager: ['store_manager', 'admin', 'super_admin'],
+    SuperAdminDashboard: ['admin', 'super_admin'],
+    Home: ['anonymous', 'user', 'admin', 'super_admin'],
+    Shop: ['anonymous', 'user', 'admin', 'super_admin'],
+    ProductDetail: ['anonymous', 'user', 'admin', 'super_admin'],
+    Login: ['anonymous'],
+    Register: ['anonymous'],
+  };
+
+  const openPages = [];
+
+
   // Render the main app
   return (
     <Routes>
-      <Route path="/" element={<LayoutWrapper currentPageName={mainPageKey}><MainPage /></LayoutWrapper>} />
-      {Object.entries(Pages).map(([path, Page]) => (
-        <Route key={path} path={`/${path}`} element={<LayoutWrapper currentPageName={path}><Page /></LayoutWrapper>} />
-      ))}
+      <Route
+        path="/"
+        element={
+          <RouteGuard
+            allowedRoles={roleMap[mainPageKey] || []}
+            allowAnonymous={(roleMap[mainPageKey] || []).includes('anonymous')}
+          >
+            <LayoutWrapper currentPageName={mainPageKey}>
+              <MainPage />
+            </LayoutWrapper>
+          </RouteGuard>
+        }
+      />
+
+      {Object.entries(Pages).map(([path, Page]) => {
+        const allowedRoles = roleMap[path] || [];
+        const allowAnonymous = (roleMap[path] || []).includes('anonymous');
+
+        return (
+          <Route
+            key={path}
+            path={`/${path}`}
+            element={
+              <RouteGuard allowedRoles={allowedRoles} allowAnonymous={allowAnonymous}>
+                <LayoutWrapper currentPageName={path}>
+                  <Page />
+                </LayoutWrapper>
+              </RouteGuard>
+            }
+          />
+        );
+      })}
+
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

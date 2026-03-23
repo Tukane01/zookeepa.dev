@@ -6,9 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { User, Save, CheckCircle } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
+import { usersAPI } from "@/api/apiService";
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [saved, setSaved] = useState(false);
   const [formData, setFormData] = useState({
     phone: "",
@@ -63,10 +64,25 @@ export default function Profile() {
 
   if (!user) return null;
 
+  const handleDeleteAccount = async () => {
+    if (!window.confirm('Are you sure you want to delete your account? This action is not reversible.')) return;
+    try {
+      await usersAPI.deleteMyAccount();
+      logout();
+    } catch (error) {
+      console.error('Delete account failed', error);
+      alert('Unable to delete account. Please try again or contact support.');
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-4xl font-bold text-gray-900 mb-8">My Profile</h1>
-
+      <h1 className="text-4xl font-bold text-gray-900 mb-4">My Profile</h1>
+      <div className="mb-6">
+        <Button variant="destructive" className="rounded-none" onClick={handleDeleteAccount}>
+          Delete My Account
+        </Button>
+      </div>
       <div className="space-y-6">
         {/* Account Info */}
         <Card>

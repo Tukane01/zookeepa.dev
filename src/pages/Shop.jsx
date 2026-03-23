@@ -23,8 +23,8 @@ export default function Shop() {
   useEffect(() => {
     Promise.all([
       fetch('/api/products').then(res => res.ok ? res.json() : []),
-      Promise.resolve([]), // Mock Promotions
-      Promise.resolve([])  // Mock SiteSettings
+      fetch('/api/promotions').then(res => res.ok ? res.json() : []),
+      fetch('/api/site-settings').then(res => res.ok ? res.json() : [])
     ]).then(([prods, promos, siteArr]) => {
       setProducts(Array.isArray(prods) ? prods.map(p => ({
         ...p,

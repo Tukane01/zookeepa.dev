@@ -1,14 +1,11 @@
 import React from "react";
 import { Calendar, MapPin } from "lucide-react";
 
-const FALLBACK_EVENTS = [
-  { title: "ZooKeepa Pop-Up Market", date: "2026-03-22", location: "Maboneng Precinct, Johannesburg", description: "Join us for a one-day pop-up featuring our latest collection, live music, and local food vendors.", image_url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80" },
-  { title: "Wild Style Fashion Show", date: "2026-04-10", location: "Sandton Convention Centre", description: "Our biggest runway event of the year showcasing the full 2026 Savanna Collection.", image_url: "https://images.unsplash.com/photo-1558618047-f4e60d3b3ec6?w=600&q=80" },
-  { title: "Community Style Workshop", date: "2026-04-28", location: "Soweto, Johannesburg", description: "Free workshop for aspiring designers and stylists from the community. Limited spots available.", image_url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80" },
-];
-
 export default function EventsSection({ events }) {
-  const display = events?.length > 0 ? events : FALLBACK_EVENTS;
+  const display = events?.length > 0 ? events.map(event => ({
+    ...event,
+    image_url: event.image_id ? `/api/images/${event.image_id}` : null
+  })) : [];
 
   return (
     <section id="events" className="py-20 bg-black text-white">
