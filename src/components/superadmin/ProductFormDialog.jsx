@@ -5,8 +5,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { productsAPI } from "@/api/apiService";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -23,15 +25,18 @@ import { Upload } from "lucide-react";
 export default function ProductFormDialog({ product, onClose }) {
   const queryClient = useQueryClient();
   const [uploading, setUploading] = useState(false);
-  
+  const [errorMessage, setErrorMessage] = useState("");
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(product?.image_url || "");
+
   const [formData, setFormData] = useState({
     name: product?.name || "",
     description: product?.description || "",
     price: product?.price || 0,
+    sale_price: product?.sale_price || null,
     category: product?.category || "tops",
     sizes: product?.sizes || ["S", "M", "L"],
     colors: product?.colors || ["Black", "White"],
-    image_url: product?.image_url || "",
+    image_id: product?.image_id || null,
     stock: product?.stock || 0,
     is_featured: product?.is_featured || false,
     is_active: product?.is_active ?? true,
@@ -40,16 +45,25 @@ export default function ProductFormDialog({ product, onClose }) {
   const [colorInput, setColorInput] = useState("");
 
   const saveMutation = useMutation({
-    mutationFn: (data) => {
+    mutationFn: async (data) => {
+      const payload = {
+        ...data,
+        sizes: data.sizes || [],
+        colors: data.colors || [],
+      };
       if (product) {
-        return Promise.resolve(data);
+        return await productsAPI.update(product.id, payload);
       }
-      return Promise.resolve(data);
+      return await productsAPI.create(payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
       queryClient.invalidateQueries({ queryKey: ['products'] });
+      setErrorMessage("");
       onClose();
+    },
+    onError: (error) => {
+      setErrorMessage(error.message || 'Failed to save product');
     },
   });
 
@@ -58,9 +72,36 @@ export default function ProductFormDialog({ product, onClose }) {
     if (!file) return;
 
     setUploading(true);
-    const objectUrl = URL.createObjectURL(file);
-    setFormData({ ...formData, image_url: objectUrl });
-    setUploading(false);
+    setErrorMessage("");
+
+    try {
+      const form = new FormData();
+      form.append('image', file);
+      form.append('altText', formData.name || '');
+
+      const token = localStorage.getItem('token');
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+      const response = await fetch('/api/images/upload', {
+        method: 'POST',
+        headers,
+        body: form,
+      });
+
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.error || 'Image upload failed');
+      }
+
+      const result = await response.json();
+      setFormData(prev => ({ ...prev, image_id: result.id }));
+      setImagePreviewUrl(URL.createObjectURL(file));
+    } catch (err) {
+      console.error('Image upload error:', err);
+      setErrorMessage(err.message || 'Image upload failed');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const toggleSize = (size) => {
@@ -83,6 +124,10 @@ export default function ProductFormDialog({ product, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!formData.name || formData.price <= 0) {
+      setErrorMessage('Name and price are required');
+      return;
+    }
     saveMutation.mutate(formData);
   };
 
@@ -100,15 +145,18 @@ export default function ProductFormDialog({ product, onClose }) {
           <div>
             <Label>Product Image</Label>
             <div className="mt-2">
-              {formData.image_url ? (
+              {imagePreviewUrl ? (
                 <div className="relative w-full aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                  <img src={formData.image_url} alt="Product" className="w-full h-full object-cover" />
+                  <img src={imagePreviewUrl} alt="Product" className="w-full h-full object-cover" />
                   <Button
                     type="button"
                     variant="secondary"
                     size="sm"
                     className="absolute bottom-2 right-2"
-                    onClick={() => setFormData({ ...formData, image_url: "" })}
+                    onClick={() => {
+                      setFormData({ ...formData, image_id: null });
+                      setImagePreviewUrl("");
+                    }}
                   >
                     Change Image
                   </Button>

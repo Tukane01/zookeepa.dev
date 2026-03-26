@@ -39,16 +39,24 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      host: 'localhost', // Bind to localhost only
+      host: '127.0.0.1', // Bind to localhost only
       port: 5174,
       strictPort: true,
       // Allow all hosts - essential for Modal tunnel URLs
       allowedHosts: true,
       proxy: {
         '/api': {
-          target: 'http://localhost:5000', // Proxies to Express Backend
+          target: 'http://127.0.0.1:5000', // Proxies to Express Backend
           changeOrigin: true,
-          // Remove the rewrite - keep /api prefix for backend
+          configure: (proxy, _options) => {
+            proxy.on('error', (err, req, res) => {
+              console.error(`Proxy error connecting to backend on ${req.url}: ${err.message}`);
+              if (res && res.writeHead) {
+                res.writeHead(502, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Backend server is not running or unreachable.' }));
+              }
+            });
+          }
         }
       },
       watch: {

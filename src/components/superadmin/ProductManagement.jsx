@@ -5,13 +5,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import ProductFormDialog from "./ProductFormDialog";
 import { Badge } from "@/components/ui/badge";
+import { productsAPI } from "@/api/apiService";
 
 const fetchProducts = async () => {
-  return [];
+  return await productsAPI.getAll();
 };
 
 const deleteProduct = async (id) => {
-  return Promise.resolve();
+  return await productsAPI.delete(id);
 };
 
 export default function ProductManagement() {
@@ -54,7 +55,7 @@ export default function ProductManagement() {
           }}
           className="bg-black hover:bg-gray-800 text-white"
         >
-          <Plus className="w-4 h-4 mr-2" />
+          <Plus className="w-5 h-5 mr-2" />
           Add Product
         </Button>
       </div>
@@ -81,7 +82,7 @@ export default function ProductManagement() {
                   </div>
                 </div>
                 <p className="text-sm text-gray-500 line-clamp-2 mb-2">{product.description}</p>
-                <p className="text-xl font-bold mb-2">${product.price?.toFixed(2)}</p>
+                <p className="text-xl font-bold mb-2">${parseFloat(product.price || 0).toFixed(2)}</p>
                 <p className="text-sm text-gray-600 mb-4">Stock: {product.stock || 0}</p>
                 <div className="flex gap-2">
                   <Button
@@ -90,7 +91,7 @@ export default function ProductManagement() {
                     onClick={() => handleEdit(product)}
                     className="flex-1"
                   >
-                    <Pencil className="w-4 h-4 mr-1" />
+                    <Pencil className="w-5 h-5 mr-1" />
                     Edit
                   </Button>
                   <Button
@@ -99,7 +100,7 @@ export default function ProductManagement() {
                     onClick={() => handleDelete(product.id)}
                     className="text-red-600 hover:text-red-700"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-5 h-5" />
                   </Button>
                 </div>
               </div>

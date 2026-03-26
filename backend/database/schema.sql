@@ -1,5 +1,5 @@
 -- 1. Users Table
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE users (
 );
 
 -- 2. Careers Table
-CREATE TABLE careers (
+CREATE TABLE IF NOT EXISTS careers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     department VARCHAR(255) NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE careers (
 );
 
 -- 2.5 Images Table (Centralized image storage)
-CREATE TABLE images (
+CREATE TABLE IF NOT EXISTS images (
     id INT AUTO_INCREMENT PRIMARY KEY,
     image_data LONGBLOB NOT NULL,
     filename VARCHAR(255),
@@ -34,7 +34,7 @@ CREATE TABLE images (
 );
 
 -- 3. Site Settings Table
-CREATE TABLE site_settings (
+CREATE TABLE IF NOT EXISTS site_settings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     setting_key VARCHAR(50) UNIQUE NOT NULL DEFAULT 'main',
     hero_image_id INT,
@@ -58,7 +58,7 @@ CREATE TABLE site_settings (
 );
 
 -- 3. Partners Table
-CREATE TABLE partners (
+CREATE TABLE IF NOT EXISTS partners (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     logo_id INT,
@@ -70,7 +70,7 @@ CREATE TABLE partners (
 );
 
 -- 4. Team Members Table
-CREATE TABLE team_members (
+CREATE TABLE IF NOT EXISTS team_members (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     role VARCHAR(255) NOT NULL,
@@ -83,7 +83,7 @@ CREATE TABLE team_members (
 );
 
 -- 5. Promotions Table
-CREATE TABLE promotions (
+CREATE TABLE IF NOT EXISTS promotions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     message TEXT NOT NULL,
@@ -98,7 +98,7 @@ CREATE TABLE promotions (
 );
 
 -- 6. Products Table
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -117,8 +117,12 @@ CREATE TABLE products (
     FOREIGN KEY (image_id) REFERENCES images(id)
 );
 
+-- Post-check for products columns (supports existing DB updates)
+ALTER TABLE products ADD COLUMN IF NOT EXISTS image_id INT;
+ALTER TABLE products ADD COLUMN IF NOT EXISTS additional_images JSON;
+
 -- 7. Orders Table
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_number VARCHAR(100) UNIQUE,
     customer_email VARCHAR(255) NOT NULL,
@@ -134,7 +138,7 @@ CREATE TABLE orders (
 );
 
 -- 8. Events Table
-CREATE TABLE events (
+CREATE TABLE IF NOT EXISTS events (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
@@ -147,7 +151,7 @@ CREATE TABLE events (
 );
 
 -- 9. Gallery Items Table
-CREATE TABLE gallery_items (
+CREATE TABLE IF NOT EXISTS gallery_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     image_id INT,
     caption TEXT,
@@ -157,3 +161,8 @@ CREATE TABLE gallery_items (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (image_id) REFERENCES images(id)
 );
+
+-- Add missing columns to existing tables
+ALTER TABLE gallery_items ADD COLUMN IF NOT EXISTS image_id INT;
+ALTER TABLE events ADD COLUMN IF NOT EXISTS image_id INT;
+ALTER TABLE team_members ADD COLUMN IF NOT EXISTS image_id INT;

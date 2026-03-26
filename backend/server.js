@@ -62,6 +62,12 @@ async function createSchemaTables() {
         if (err.code === 'ER_TABLE_EXISTS_ERROR') {
           continue;
         }
+        if (err.errno === 121) { // Duplicate key
+          continue;
+        }
+        if (err.code === 'ER_DUP_FIELDNAME') {
+          continue; // Column already exists
+        }
         if (err.code === 'ER_PARSE_ERROR') {
           console.warn('Skipping parse error for statement:', stmt.slice(0, 100));
           continue;
@@ -71,6 +77,28 @@ async function createSchemaTables() {
     }
 
     console.log('Database schema tables checked/created.');
+
+    // Ensure important columns exist on legacy DBs
+    const schemaUpserts = [
+      { table: 'products', query: 'ALTER TABLE products ADD COLUMN image_id INT' },
+      { table: 'products', query: 'ALTER TABLE products ADD COLUMN additional_images JSON' },
+      { table: 'events', query: 'ALTER TABLE events ADD COLUMN image_id INT' },
+      { table: 'gallery_items', query: 'ALTER TABLE gallery_items ADD COLUMN image_id INT' },
+      { table: 'team_members', query: 'ALTER TABLE team_members ADD COLUMN image_id INT' },
+      { table: 'site_settings', query: 'ALTER TABLE site_settings ADD COLUMN hero_image_id INT' },
+    ];
+
+    for (const op of schemaUpserts) {
+      try {
+        await pool.query(op.query);
+      } catch (err) {
+        if (['ER_DUP_FIELDNAME', 'ER_CANT_DROP_FIELD_OR_KEY', 'ER_NO_SUCH_TABLE', 'ER_BAD_FIELD_ERROR', 'ER_DUP_FIELDNAME'].includes(err.code)) {
+          continue;
+        }
+        console.warn(`Schema patch failed (${op.query}):`, err.code, err.message);
+      }
+    }
+
   } catch (error) {
     console.error('Error creating database schema:', error.message);
     throw error;
