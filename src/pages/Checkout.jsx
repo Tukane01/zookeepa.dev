@@ -62,15 +62,15 @@ export default function Checkout() {
   if (success) return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-4">
       <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
-      <h2 className="brand-font text-4xl font-semibold mb-2">Order Placed!</h2>
+      <h2 className="brand-font text-4xl font-semibold mb-2">Order Placed!</h2> {/* Icon size is fine here */}
       <p className="text-gray-500 mb-1">Order #{orderNumber}</p>
       <p className="text-gray-500 mb-8">Thank you! We'll send updates to {user?.email}</p>
       <div className="flex gap-3">
         <Button variant="outline" className="rounded-none px-6" onClick={() => navigate(createPageUrl("Shop"))}>
-          <ShoppingBag className="w-4 h-4 mr-2" /> Continue Shopping
+          <ShoppingBag className="w-5 h-5 mr-2" /> Continue Shopping
         </Button>
         <Button className="bg-black text-white rounded-none px-6" onClick={() => navigate(createPageUrl("MyOrders"))}>
-          <Package className="w-4 h-4 mr-2" /> View Orders
+          <Package className="w-5 h-5 mr-2" /> View Orders
         </Button>
       </div>
     </div>
@@ -112,7 +112,7 @@ export default function Checkout() {
           </div>
           <Button type="submit" disabled={loading} className="w-full h-12 bg-black hover:bg-gray-900 text-white rounded-none tracking-wider text-sm mt-4">
             {loading ? "Placing Order…" : <><Check className="w-4 h-4 mr-2" /> Place Order · R${total.toFixed(2)}</>}
-          </Button>
+          </Button> {/* Icon size w-4 h-4 is fine here as it's a small button */}
         </form>
 
         {/* Order Summary */}

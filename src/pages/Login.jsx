@@ -51,7 +51,7 @@ export default function Login() {
           {error && <p className="text-sm text-red-600">{error}</p>}
           <div className="flex items-center justify-between">
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Signing in…' : <><LogIn className="w-4 h-4 mr-2" /> Sign in</>}
+              {loading ? 'Signing in…' : <><LogIn className="w-5 h-5 mr-2" /> Sign in</>}
             </Button>
           </div>
         </form>

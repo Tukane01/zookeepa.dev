@@ -111,8 +111,8 @@ export default function SiteSettingsManagement() {
     <div className="max-w-3xl">
       <Tabs defaultValue="hero">
         <TabsList className="rounded-none bg-gray-100 mb-6">
-          <TabsTrigger value="hero" className="rounded-none data-[state=active]:bg-black data-[state=active]:text-white"><Image className="w-4 h-4 mr-2" /> Hero / Slideshow</TabsTrigger>
-          <TabsTrigger value="contact" className="rounded-none data-[state=active]:bg-black data-[state=active]:text-white"><MapPin className="w-4 h-4 mr-2" /> Contact Details</TabsTrigger>
+          <TabsTrigger value="hero" className="rounded-none data-[state=active]:bg-black data-[state=active]:text-white"><Image className="w-5 h-5 mr-2" /> Hero / Slideshow</TabsTrigger>
+          <TabsTrigger value="contact" className="rounded-none data-[state=active]:bg-black data-[state=active]:text-white"><MapPin className="w-5 h-5 mr-2" /> Contact Details</TabsTrigger>
         </TabsList>
 
         <TabsContent value="hero" className="space-y-6">
@@ -145,14 +145,14 @@ export default function SiteSettingsManagement() {
             <p className="text-xs text-gray-500 mb-3">Add multiple images to create a hero slideshow. They will auto-advance every 5 seconds.</p>
             <div className="flex gap-2 mb-4">
               <Input value={newImageUrl} onChange={e => setNewImageUrl(e.target.value)} className="rounded-none flex-1" placeholder="https://image-url.com/photo.jpg" onKeyDown={e => e.key === "Enter" && addSlide()} />
-              <Button onClick={addSlide} className="bg-black text-white rounded-none"><Plus className="w-4 h-4 mr-1" /> Add</Button>
+              <Button onClick={addSlide} className="bg-black text-white rounded-none"><Plus className="w-5 h-5 mr-1" /> Add</Button>
             </div>
             <div className="space-y-2">
               {form.hero_images.map((url, i) => (
                 <div key={i} className="flex items-center gap-3 border border-gray-200 p-2">
                   <img src={url} alt="" className="w-20 h-12 object-cover" />
                   <span className="flex-1 text-xs text-gray-600 truncate">{url}</span>
-                  <button onClick={() => removeSlide(i)} className="text-red-500 hover:text-red-700"><Trash2 className="w-4 h-4" /></button>
+                  <button onClick={() => removeSlide(i)} className="text-red-500 hover:text-red-700"><Trash2 className="w-5 h-5" /></button>
                 </div>
               ))}
             </div>
@@ -186,7 +186,7 @@ export default function SiteSettingsManagement() {
 
       <div className="mt-6 flex items-center gap-4">
         <Button onClick={save} disabled={saving} className="bg-black text-white rounded-none px-8">
-          {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> Save All Settings</>}
+          {saving ? "Saving…" : <><Save className="w-5 h-5 mr-2" /> Save All Settings</>}
         </Button>
         {saved && <span className="text-green-600 text-sm font-medium">✓ Saved!</span>}
       </div>

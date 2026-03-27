@@ -154,7 +154,7 @@ export default function ProductFormDialog({ product, onClose }) {
                     size="sm"
                     className="absolute bottom-2 right-2"
                     onClick={() => {
-                      setFormData({ ...formData, image_id: null });
+                      setFormData({ ...formData, image_id: null }); // Icon size is fine here
                       setImagePreviewUrl("");
                     }}
                   >
@@ -271,7 +271,7 @@ export default function ProductFormDialog({ product, onClose }) {
                 onChange={(e) => setColorInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addColor())}
               />
-              <Button type="button" onClick={addColor}><Plus className="w-4 h-4 mr-2" /> Add</Button>
+              <Button type="button" onClick={addColor}><Plus className="w-5 h-5 mr-2" /> Add</Button>
             </div>
             <div className="flex gap-2 mt-2 flex-wrap">
               {formData.colors.map((color) => (
@@ -319,15 +319,15 @@ export default function ProductFormDialog({ product, onClose }) {
 
           <div className="flex justify-end gap-3 pt-4 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
-              <X className="w-4 h-4 mr-2" /> Cancel
+              <X className="w-5 h-5 mr-2" /> Cancel
             </Button>
             <Button
               type="submit"
               disabled={saveMutation.isPending || uploading}
               className="bg-black hover:bg-gray-800 text-white"
             >
-              {saveMutation.isPending ? 'Saving...' : (
-                <><Save className="w-4 h-4 mr-2" /> {product ? 'Update Product' : 'Create Product'}</>
+              {saveMutation.isPending ? 'Saving...' : ( // Icon size is fine here
+                <><Save className="w-5 h-5 mr-2" /> {product ? 'Update Product' : 'Create Product'}</>
               )}
             </Button>
           </div>

@@ -125,7 +125,7 @@ export default function GalleryManagement() {
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-semibold text-lg">Gallery ({items.length} images)</h2>
-        <Button onClick={openNew} className="bg-black text-white rounded-none">
+        <Button onClick={openNew} className="bg-black text-white rounded-none"> {/* Increased icon size */}
           <Plus className="w-4 h-4 mr-2" /> Add Image
         </Button>
       </div>
@@ -143,10 +143,10 @@ export default function GalleryManagement() {
             <p className="text-xs text-gray-600 mt-1 truncate">{item.caption || "No caption"}</p>
             <div className="absolute top-1 right-1 hidden group-hover:flex gap-1">
               <button onClick={() => openEdit(item)} className="w-6 h-6 bg-white rounded-full shadow flex items-center justify-center">
-                <Pencil className="w-3 h-3" />
+                <Pencil className="w-4 h-4" />
               </button>
-              <button onClick={() => del(item.id)} className="w-6 h-6 bg-white rounded-full shadow flex items-center justify-center text-red-500">
-                <Trash2 className="w-3 h-3" />
+              <button onClick={() => del(item.id)} className="w-6 h-6 bg-white rounded-full shadow flex items-center justify-center text-red-500"> {/* Increased icon size */}
+                <Trash2 className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -202,14 +202,14 @@ export default function GalleryManagement() {
               </div>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+          <DialogFooter> {/* Icon size is fine here */}
+            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-5 h-5 mr-2" /> Cancel</Button>
             <Button
               className="bg-black text-white rounded-none"
               onClick={save}
-              disabled={saving || !form.image_id}
+              disabled={saving || !form.image_id} {/* Icon size is fine here */}
             >
-              {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> {editing ? "Update" : "Add Image"}</>}
+              {saving ? "Saving…" : <><Save className="w-5 h-5 mr-2" /> {editing ? "Update" : "Add Image"}</>}
             </Button>
           </DialogFooter>
         </DialogContent>

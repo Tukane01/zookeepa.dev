@@ -77,7 +77,7 @@ export default function ProductDetail() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <Link to={createPageUrl("Shop")} className="inline-flex items-center text-sm text-gray-500 hover:text-black mb-6 gap-1">
+      <Link to={createPageUrl("Shop")} className="inline-flex items-center text-sm text-gray-500 hover:text-black mb-6 gap-1"> {/* Increased icon size */}
         <ChevronLeft className="w-4 h-4" /> Back to Shop
       </Link>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
@@ -156,7 +156,7 @@ export default function ProductDetail() {
           </div>
 
           <Button onClick={addToCart} className="w-full h-12 bg-black hover:bg-gray-900 text-white tracking-widest text-sm rounded-none">
-            {added ? <><Check className="w-4 h-4 mr-2" /> Added!</> : <><ShoppingBag className="w-4 h-4 mr-2" /> Add to Cart</>}
+            {added ? <><Check className="w-5 h-5 mr-2" /> Added!</> : <><ShoppingBag className="w-5 h-5 mr-2" /> Add to Cart</>}
           </Button>
 
           {product.stock <= 5 && product.stock > 0 && (

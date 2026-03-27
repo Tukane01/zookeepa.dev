@@ -53,14 +53,14 @@ export default function ProductManagement() {
             setSelectedProduct(null);
             setShowForm(true);
           }}
-          className="bg-black hover:bg-gray-800 text-white"
+          className="bg-black hover:bg-gray-800 text-white rounded-none"
         >
-          <Plus className="w-5 h-5 mr-2" />
+          <Plus className="w-6 h-6 mr-2" />
           Add Product
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {products.map((product) => (
           <Card key={product.id}>
             <CardContent className="p-0">
@@ -90,17 +90,17 @@ export default function ProductManagement() {
                     size="sm"
                     onClick={() => handleEdit(product)}
                     className="flex-1"
-                  >
-                    <Pencil className="w-5 h-5 mr-1" />
+                  > {/* Increased icon size */}
+                    <Pencil className="w-6 h-6 mr-1" />
                     Edit
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => handleDelete(product.id)}
-                    className="text-red-600 hover:text-red-700"
+                    className="text-red-600 hover:text-red-700" {/* Increased icon size */}
                   >
-                    <Trash2 className="w-5 h-5" />
+                    <Trash2 className="w-6 h-6" />
                   </Button>
                 </div>
               </div>

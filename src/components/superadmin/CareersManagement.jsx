@@ -110,14 +110,14 @@ export default function CareersManagement() {
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-semibold text-lg">Careers ({items.length} positions)</h2>
-        <Button onClick={openNew} className="bg-black text-white rounded-none"><Plus className="w-4 h-4 mr-2" /> Add Position</Button>
+        <Button onClick={openNew} className="bg-black text-white rounded-none"><Plus className="w-5 h-5 mr-2" /> Add Position</Button>
       </div>
 
       <div className="border border-gray-200 overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">
             <tr>{["Title", "Department", "Type", "Location", "Open", "Actions"].map(h => (
-              <th key={h} className="text-left px-4 py-3 text-xs tracking-wider uppercase text-gray-500 font-semibold">{h}</th>
+              <th key={h} className="text-left px-4 py-3 text-xs tracking-wider uppercase text-gray-500 font-semibold whitespace-nowrap">{h}</th>
             ))}</tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -126,14 +126,14 @@ export default function CareersManagement() {
                 <td className="px-4 py-3 font-medium">{item.title}</td>
                 <td className="px-4 py-3 text-gray-500">{item.department}</td>
                 <td className="px-4 py-3"><span className={`text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_COLORS[item.type] || "bg-gray-100"}`}>{item.type}</span></td>
-                <td className="px-4 py-3 text-gray-500 text-xs">{item.location}</td>
+                <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">{item.location}</td>
                 <td className="px-4 py-3">
-                  <button onClick={() => toggle(item)}>{item.is_open !== false ? <ToggleRight className="w-6 h-6 text-green-500" /> : <ToggleLeft className="w-6 h-6 text-gray-400" />}</button>
+                  <button onClick={() => toggle(item)}>{item.is_open !== false ? <ToggleRight className="w-7 h-7 text-green-500" /> : <ToggleLeft className="w-7 h-7 text-gray-400" />}</button>
                 </td>
                 <td className="px-4 py-3">
-                  <div className="flex gap-1">
-                    <Button variant="ghost" size="icon" className="w-8 h-8" onClick={() => openEdit(item)}><Pencil className="w-3.5 h-3.5" /></Button>
-                    <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-red-500" onClick={() => del(item.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="icon" className="w-8 h-8" onClick={() => openEdit(item)}><Pencil className="w-4 h-4" /></Button>
+                    <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-red-500" onClick={() => del(item.id)}><Trash2 className="w-4 h-4" /></Button>
                   </div>
                 </td>
               </tr>
@@ -168,9 +168,9 @@ export default function CareersManagement() {
             <div className="flex items-center gap-3"><Switch checked={form.is_open} onCheckedChange={v => setForm({ ...form, is_open: v })} /><Label className="text-sm">Position is Open</Label></div>
           </div>
           <DialogFooter>
-            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-5 h-5 mr-2" /> Cancel</Button>
             <Button className="bg-black text-white rounded-none" onClick={save} disabled={saving || !form.title || !form.department}>
-              {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> {editing ? "Update" : "Add Position"}</>}
+              {saving ? "Saving…" : <><Save className="w-5 h-5 mr-2" /> {editing ? "Update" : "Add Position"}</>}
             </Button>
           </DialogFooter>
         </DialogContent>

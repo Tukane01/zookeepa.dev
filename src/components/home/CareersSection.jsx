@@ -48,8 +48,8 @@ export default function CareersSection({ careers }) {
                 <div className="px-5 pb-5 border-t border-gray-700 pt-4">
                   <p className="text-gray-300 text-sm leading-relaxed mb-4">{job.description}</p>
               <Button asChild className="bg-yellow-500 hover:bg-yellow-400 text-black rounded-none text-xs tracking-wider px-6">
-                <a href={`mailto:careers@zookeepa.com?subject=Application: ${job.title}`}>
-                      <Send className="w-4 h-4 mr-2 inline" /> Apply Now
+                <a href={`mailto:careers@zookeepa.com?subject=Application: ${job.title}`} className="flex items-center">
+                      <Send className="w-5 h-5 mr-2 inline" /> Apply Now
                 </a>
               </Button>
                 </div>

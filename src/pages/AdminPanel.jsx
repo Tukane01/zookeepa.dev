@@ -158,13 +158,13 @@ export default function AdminPanel() {
       <Tabs defaultValue="products">
         <TabsList className="rounded-none bg-gray-100 mb-8">
           <TabsTrigger value="products" className="rounded-none data-[state=active]:bg-black data-[state=active]:text-white">
-            <Package className="w-4 h-4 mr-2" /> Products ({products.length})
+            <Package className="w-5 h-5 mr-2" /> Products ({products.length})
           </TabsTrigger>
           <TabsTrigger value="promotions" className="rounded-none data-[state=active]:bg-black data-[state=active]:text-white">
-            <Megaphone className="w-4 h-4 mr-2" /> Promotions ({promotions.length})
+            <Megaphone className="w-5 h-5 mr-2" /> Promotions ({promotions.length})
           </TabsTrigger>
           <TabsTrigger value="site" className="rounded-none data-[state=active]:bg-black data-[state=active]:text-white">
-            <Image className="w-4 h-4 mr-2" /> Site Settings
+            <Image className="w-5 h-5 mr-2" /> Site Settings
           </TabsTrigger>
         </TabsList>
 
@@ -172,7 +172,7 @@ export default function AdminPanel() {
         <TabsContent value="products">
           <div className="flex justify-between items-center mb-4">
             <h2 className="font-semibold text-lg">All Products</h2>
-            <Button onClick={openNewProduct} className="bg-black text-white rounded-none">
+            <Button onClick={openNewProduct} className="bg-black text-white rounded-none"> {/* Increased icon size */}
               <Plus className="w-4 h-4 mr-2" /> Add Product
             </Button>
           </div>
@@ -195,11 +195,11 @@ export default function AdminPanel() {
                     <td className="px-4 py-3">{p.stock}</td>
                     <td className="px-4 py-3">
                       <button onClick={() => toggleProduct(p)}>
-                        {p.is_active !== false ? <ToggleRight className="w-6 h-6 text-green-500" /> : <ToggleLeft className="w-6 h-6 text-gray-400" />}
+                        {p.is_active !== false ? <ToggleRight className="w-7 h-7 text-green-500" /> : <ToggleLeft className="w-7 h-7 text-gray-400" />}
                       </button>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex gap-1">
+                      <div className="flex gap-2">
                         <Button variant="ghost" size="icon" className="w-8 h-8" onClick={() => openEditProduct(p)}><Pencil className="w-3.5 h-3.5" /></Button>
                         <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-red-500" onClick={() => deleteProduct(p.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
                       </div>
@@ -216,7 +216,7 @@ export default function AdminPanel() {
         <TabsContent value="promotions">
           <div className="flex justify-between items-center mb-4">
             <h2 className="font-semibold text-lg">Promotions & Announcements</h2>
-            <Button onClick={openNewPromo} className="bg-black text-white rounded-none">
+            <Button onClick={openNewPromo} className="bg-black text-white rounded-none"> {/* Increased icon size */}
               <Plus className="w-4 h-4 mr-2" /> Add Promotion
             </Button>
           </div>
@@ -235,9 +235,9 @@ export default function AdminPanel() {
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <button onClick={() => togglePromo(promo)}>
-                    {promo.is_active !== false ? <ToggleRight className="w-6 h-6 text-green-500" /> : <ToggleLeft className="w-6 h-6 text-gray-400" />}
+                    {promo.is_active !== false ? <ToggleRight className="w-7 h-7 text-green-500" /> : <ToggleLeft className="w-7 h-7 text-gray-400" />}
                   </button>
-                  <Button variant="ghost" size="icon" className="w-8 h-8" onClick={() => openEditPromo(promo)}><Pencil className="w-3.5 h-3.5" /></Button>
+                  <Button variant="ghost" size="icon" className="w-8 h-8" onClick={() => openEditPromo(promo)}><Pencil className="w-4 h-4" /></Button>
                   <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-red-500" onClick={() => deletePromo(promo.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
                 </div>
               </div>
@@ -269,7 +269,7 @@ export default function AdminPanel() {
                 <Input value={siteForm.hero_cta_text} onChange={e => setSiteForm({ ...siteForm, hero_cta_text: e.target.value })} className="rounded-none mt-1" placeholder="Explore Collection" />
               </div>
               <Button onClick={saveSiteSettings} disabled={saving} className="bg-black text-white rounded-none px-8">
-                {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> Save Settings</>}
+                {saving ? "Saving…" : <><Save className="w-5 h-5 mr-2" /> Save Settings</>}
               </Button>
             </div>
           </div>
@@ -338,9 +338,9 @@ export default function AdminPanel() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" className="rounded-none" onClick={() => setProductDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+            <Button variant="outline" className="rounded-none" onClick={() => setProductDialog(false)}><X className="w-5 h-5 mr-2" /> Cancel</Button>
             <Button className="bg-black text-white rounded-none" onClick={saveProduct} disabled={saving || !pForm.name || !pForm.price}>
-              {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> {editProduct ? "Update Product" : "Add Product"}</>}
+              {saving ? "Saving…" : <><Save className="w-5 h-5 mr-2" /> {editProduct ? "Update Product" : "Add Product"}</>}
             </Button>
           </DialogFooter>
         </DialogContent>

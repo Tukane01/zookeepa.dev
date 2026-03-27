@@ -94,7 +94,7 @@ export default function PromotionsManagement() {
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-semibold text-lg">Promotions & Announcements ({items.length})</h2>
-        <Button onClick={openNew} className="bg-black text-white rounded-none"><Plus className="w-4 h-4 mr-2" /> Add Promotion</Button>
+        <Button onClick={openNew} className="bg-black text-white rounded-none"><Plus className="w-5 h-5 mr-2" /> Add Promotion</Button>
       </div>
 
       <div className="space-y-3">
@@ -112,8 +112,8 @@ export default function PromotionsManagement() {
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <button onClick={() => toggle(p)}>{p.is_active !== false ? <ToggleRight className="w-6 h-6 text-green-500" /> : <ToggleLeft className="w-6 h-6 text-gray-400" />}</button>
-              <Button variant="ghost" size="icon" className="w-8 h-8" onClick={() => openEdit(p)}><Pencil className="w-3.5 h-3.5" /></Button>
-              <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-red-500" onClick={() => del(p.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
+                  <Button variant="ghost" size="icon" className="w-8 h-8" onClick={() => openEdit(p)}><Pencil className="w-4 h-4" /></Button>
+                  <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-red-500" onClick={() => del(p.id)}><Trash2 className="w-4 h-4" /></Button>
             </div>
           </div>
         ))}
@@ -146,11 +146,11 @@ export default function PromotionsManagement() {
             </div>
             <div className="rounded-none p-3 text-center text-sm font-medium" style={{ backgroundColor: form.background_color, color: form.text_color }}><strong>{form.title || "Preview Title"}</strong> {form.message || "Preview message..."}</div>
             <div className="flex items-center gap-3"><Switch checked={form.is_active} onCheckedChange={v => setForm({ ...form, is_active: v })} /><Label className="text-sm">Show on shop page</Label></div>
-          </div>
+          </div> {/* Icon size is fine here */}
           <DialogFooter>
-            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-5 h-5 mr-2" /> Cancel</Button>
             <Button className="bg-black text-white rounded-none" onClick={save} disabled={saving || !form.title || !form.message}>
-              {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> {editing ? "Update" : "Add Promotion"}</>}
+              {saving ? "Saving…" : <><Save className="w-5 h-5 mr-2" /> {editing ? "Update" : "Add Promotion"}</>}
             </Button>
           </DialogFooter>
         </DialogContent>

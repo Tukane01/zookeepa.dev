@@ -35,7 +35,7 @@ export default function Cart() {
       <p className="text-gray-500 mb-6">Discover our latest collection</p>
       <Link to={createPageUrl("Shop")}>
         <Button className="bg-black hover:bg-gray-900 text-white rounded-none px-8 tracking-wider">
-          <ShoppingBag className="w-4 h-4 mr-2" /> Shop Now
+          <ShoppingBag className="w-5 h-5 mr-2" /> Shop Now
         </Button>
       </Link>
     </div>
@@ -76,14 +76,14 @@ export default function Cart() {
           {user ? (
             <Link to={createPageUrl("Checkout")}>
               <Button className="w-full bg-black hover:bg-gray-900 text-white rounded-none h-12 tracking-wider text-sm">
-                Proceed to Checkout <ArrowRight className="w-4 h-4 ml-2" />
+                Proceed to Checkout <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
           ) : (
             <div className="text-center">
               <p className="text-sm text-gray-500 mb-3">You must sign in to checkout</p>
               <Button className="w-full bg-black hover:bg-gray-900 text-white rounded-none h-12 tracking-wider text-sm" onClick={() => window.location.href = '/login'}>
-                <LogIn className="w-4 h-4 mr-2" /> Sign In to Checkout
+                <LogIn className="w-5 h-5 mr-2" /> Sign In to Checkout
               </Button>
             </div>
           )}

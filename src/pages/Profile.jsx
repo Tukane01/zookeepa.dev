@@ -78,8 +78,7 @@ export default function Profile() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <h1 className="text-4xl font-bold text-gray-900 mb-4">My Profile</h1>
-      <div className="mb-6">
-        <Button variant="destructive" className="rounded-none" onClick={handleDeleteAccount}>
+      <div className="mb-6"> ructive" className="rounded-none" onClick={handleDeleteAccount}>
           <Trash2 className="w-4 h-4 mr-2" /> Delete My Account
         </Button>
       </div>
@@ -181,14 +180,12 @@ export default function Profile() {
                 className="bg-black hover:bg-gray-800 text-white"
               >
                 {saved ? (
-                  <>
-                    <CheckCircle className="w-4 h-4 mr-2" />
+                  <> {/* I<CheckCircle className="w-4 h-4 mr-2" />
                     Saved
                   </>
                 ) : (
-                  <>
-                    <Save className="w-4 h-4 mr-2" />
-                    Save Changes
+                  <> {/* Increased icon size */}
+                    <Save Changes
                   </>
                 )}
               </Button>

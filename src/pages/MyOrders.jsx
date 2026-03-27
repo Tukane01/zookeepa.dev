@@ -46,7 +46,7 @@ export default function MyOrders() {
       <p className="text-gray-500 mb-4">Sign in to view your orders</p>
       <Button className="bg-black text-white rounded-none px-6" onClick={() => window.location.href = '/login'}>
         <LogIn className="w-4 h-4 mr-2" /> Sign In
-      </Button>
+      </Button> {/* Icon size w-4 h-4 is fine here as it's not a primary action button */}
     </div>
   );
 
@@ -57,7 +57,7 @@ export default function MyOrders() {
       <p className="text-gray-500 mb-6">Start shopping to see your orders here</p>
       <Link to={createPageUrl("Shop")}>
         <Button className="bg-black text-white rounded-none px-8">
-          <ShoppingBag className="w-4 h-4 mr-2" /> Shop Now
+          <ShoppingBag className="w-5 h-5 mr-2" /> Shop Now
         </Button>
       </Link>
     </div>

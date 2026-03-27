@@ -75,7 +75,7 @@ export default function PartnersManagement() {
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-semibold text-lg">Partners ({items.length})</h2>
-        <Button onClick={openNew} className="bg-black text-white rounded-none"><Plus className="w-4 h-4 mr-2" /> Add Partner</Button>
+        <Button onClick={openNew} className="bg-black text-white rounded-none"><Plus className="w-5 h-5 mr-2" /> Add Partner</Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -90,8 +90,8 @@ export default function PartnersManagement() {
               {item.website_url && <a href={item.website_url} target="_blank" rel="noreferrer" className="text-xs text-yellow-600 hover:underline">{item.website_url}</a>}
             </div>
             <div className="flex gap-1">
-              <Button variant="ghost" size="icon" className="w-7 h-7" onClick={() => openEdit(item)}><Pencil className="w-3 h-3" /></Button>
-              <Button variant="ghost" size="icon" className="w-7 h-7 hover:text-red-500" onClick={() => del(item.id)}><Trash2 className="w-3 h-3" /></Button>
+              <Button variant="ghost" size="icon" className="w-7 h-7" onClick={() => openEdit(item)}><Pencil className="w-4 h-4" /></Button>
+              <Button variant="ghost" size="icon" className="w-7 h-7 hover:text-red-500" onClick={() => del(item.id)}><Trash2 className="w-4 h-4" /></Button>
             </div>
           </div>
         ))}
@@ -121,10 +121,10 @@ export default function PartnersManagement() {
             </div>
             <div><Label className="text-xs uppercase tracking-wider">Website URL</Label><Input value={form.website_url} onChange={e => setForm({ ...form, website_url: e.target.value })} className="rounded-none mt-1" placeholder="https://..." /></div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+          <DialogFooter> {/* Icon size is fine here */}
+            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-5 h-5 mr-2" /> Cancel</Button>
             <Button className="bg-black text-white rounded-none" onClick={save} disabled={saving || !form.name}>
-              {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> {editing ? "Update" : "Add Partner"}</>}
+              {saving ? "Saving…" : <><Save className="w-5 h-5 mr-2" /> {editing ? "Update" : "Add Partner"}</>}
             </Button>
           </DialogFooter>
         </DialogContent>

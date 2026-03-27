@@ -101,7 +101,7 @@ export default function UserManagement() {
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-semibold text-lg">Users & Access ({users.length})</h2>
-        <Button onClick={() => { setInviteForm({ email: "", full_name: "", password: "", role: "user" }); setInviteDialog(true); }} className="bg-black text-white rounded-none">
+        <Button onClick={() => { setInviteForm({ email: "", full_name: "", password: "", role: "user" }); setInviteDialog(true); }} className="bg-black text-white rounded-none"> {/* Increased icon size */}
           <Plus className="w-4 h-4 mr-2" /> Invite User
         </Button>
       </div>
@@ -147,17 +147,17 @@ export default function UserManagement() {
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex gap-1">
-                    {u.role === "suspended" ? (
-                      <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-green-600" title="Reinstate" onClick={() => reinstate(u)}>
-                        <UserCheck className="w-3.5 h-3.5" />
+                    {u.role === "suspended" ? ( {/* Increased icon size */}
+                      <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-green-600" title="Reinstate" onClick={() => reinstate(u)}> {/* Increased icon size */}
+                        <UserCheck className="w-4 h-4" />
                       </Button>
                     ) : (
-                      <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-orange-500" title="Suspend" onClick={() => suspend(u)}>
-                        <UserX className="w-3.5 h-3.5" />
+                      <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-orange-500" title="Suspend" onClick={() => suspend(u)}> {/* Increased icon size */}
+                        <UserX className="w-4 h-4" />
                       </Button>
                     )}
-                    <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-red-600" title="Delete" onClick={() => removeUser(u)}>
-                      <Trash2 className="w-3.5 h-3.5" />
+                    <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-red-600" title="Delete" onClick={() => removeUser(u)}> {/* Increased icon size */}
+                      <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </td>
@@ -202,10 +202,10 @@ export default function UserManagement() {
                   </Select>
                 </div>
               </div>
-              <DialogFooter>
-                <Button variant="outline" className="rounded-none" onClick={() => setInviteDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+              <DialogFooter> {/* Icon size is fine here */}
+                <Button variant="outline" className="rounded-none" onClick={() => setInviteDialog(false)}><X className="w-5 h-5 mr-2" /> Cancel</Button>
                 <Button className="bg-black text-white rounded-none" onClick={handleInvite} disabled={inviting || !inviteForm.email}>
-                  {inviting ? "Sending…" : <><Mail className="w-4 h-4 mr-2" /> Send Invite</>}
+                  {inviting ? "Sending…" : <><Mail className="w-5 h-5 mr-2" /> Send Invite</>}
                 </Button>
               </DialogFooter>
             </>

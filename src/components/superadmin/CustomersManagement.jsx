@@ -104,7 +104,7 @@ export default function CustomersManagement() {
           <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by name or email…" className="pl-10 rounded-none" />
         </div>
         <Button onClick={openBulkEmail} className="bg-yellow-500 hover:bg-yellow-400 text-black rounded-none font-semibold">
-          <Send className="w-4 h-4 mr-2" /> Email All Customers ({activeCount})
+          <Send className="w-5 h-5 mr-2" /> Email All Customers ({activeCount})
         </Button>
       </div>
 
@@ -140,19 +140,19 @@ export default function CustomersManagement() {
                 <td className="px-4 py-3">
                   <div className="flex gap-1 items-center">
                     <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-yellow-600" title="Send Email" onClick={() => openEmail(u)}>
-                      <Mail className="w-3.5 h-3.5" />
+                      <Mail className="w-4 h-4" />
                     </Button>
                     {u.role === "suspended" ? (
                       <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-green-600" title="Reinstate" onClick={() => reinstate(u)}>
-                        <UserCheck className="w-3.5 h-3.5" />
+                        <UserCheck className="w-4 h-4" />
                       </Button>
                     ) : (
                       <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-orange-500" title="Suspend" onClick={() => suspend(u)}>
-                        <UserX className="w-3.5 h-3.5" />
+                        <UserX className="w-4 h-4" />
                       </Button>
                     )}
                     <Button variant="ghost" size="icon" className="w-8 h-8 hover:text-red-500" title="Delete Account" onClick={() => deleteCustomer(u)}>
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </td>
@@ -194,9 +194,9 @@ export default function CustomersManagement() {
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" className="rounded-none" onClick={() => setEmailDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+                <Button variant="outline" className="rounded-none" onClick={() => setEmailDialog(false)}><X className="w-5 h-5 mr-2" /> Cancel</Button>
                 <Button className="bg-black text-white rounded-none" onClick={sendEmail} disabled={sending || !emailForm.subject || !emailForm.body}>
-                  {sending ? "Sending…" : <><Send className="w-4 h-4 mr-2" /> Send Email</>}
+                  {sending ? "Sending…" : <><Send className="w-5 h-5 mr-2" /> Send Email</>}
                 </Button>
               </DialogFooter>
             </>
@@ -233,9 +233,9 @@ export default function CustomersManagement() {
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" className="rounded-none" onClick={() => setBulkEmailDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+                <Button variant="outline" className="rounded-none" onClick={() => setBulkEmailDialog(false)}><X className="w-5 h-5 mr-2" /> Cancel</Button>
                 <Button className="bg-yellow-500 hover:bg-yellow-400 text-black font-semibold rounded-none" onClick={sendBulkEmail} disabled={sending || !emailForm.subject || !emailForm.body}>
-                  {sending ? `Sending to ${activeCount} customers…` : <><Send className="w-4 h-4 mr-2" /> Send to All ({activeCount})</>}
+                  {sending ? `Sending to ${activeCount} customers…` : <><Send className="w-5 h-5 mr-2" /> Send to All ({activeCount})</>}
                 </Button>
               </DialogFooter>
             </>

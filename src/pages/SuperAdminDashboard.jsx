@@ -60,8 +60,8 @@ export default function SuperAdminDashboard() {
               key={value}
               onClick={() => setActiveTab(value)}
               className={`flex items-center whitespace-nowrap text-xs px-3 py-2 rounded-md transition-colors ${activeTab === value ? 'bg-white shadow text-black font-medium' : 'text-gray-600 hover:text-gray-900'}`}
-            >
-              <Icon className="w-3.5 h-3.5 mr-1.5" /> {label}
+            > {/* Increased icon size */}
+              <Icon className="w-4 h-4 mr-1.5" /> {label}
             </button>
           ))}
         </div>
@@ -181,7 +181,7 @@ function OrderManagement() {
                       onClick={() => {/* Open order details modal */}}
                       className="text-blue-600 hover:text-blue-800 text-sm"
                     >
-                      <Eye className="w-4 h-4 mr-1 inline" /> View Details
+                      <Eye className="w-5 h-5 mr-1 inline" /> View Details
                     </button>
                   </td>
                 </tr>

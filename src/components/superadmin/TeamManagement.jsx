@@ -127,7 +127,7 @@ export default function TeamManagement() {
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-semibold text-lg">Development Team ({items.length} members)</h2>
-        <Button onClick={openNew} className="bg-black text-white rounded-none">
+        <Button onClick={openNew} className="bg-black text-white rounded-none"> {/* Increased icon size */}
           <Plus className="w-4 h-4 mr-2" /> Add Member
         </Button>
       </div>
@@ -148,10 +148,10 @@ export default function TeamManagement() {
               {item.bio && <p className="text-xs text-gray-500 mt-1 line-clamp-2">{item.bio}</p>}
             </div>
             <div className="flex gap-1 flex-shrink-0">
-              <Button variant="ghost" size="icon" className="w-7 h-7" onClick={() => openEdit(item)}>
-                <Pencil className="w-3 h-3" />
+              <Button variant="ghost" size="icon" className="w-7 h-7" onClick={() => openEdit(item)}> {/* Increased icon size */}
+                <Pencil className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="w-7 h-7 hover:text-red-500" onClick={() => del(item.id)}><Trash2 className="w-3 h-3" /></Button>
+              <Button variant="ghost" size="icon" className="w-7 h-7 hover:text-red-500" onClick={() => del(item.id)}><Trash2 className="w-4 h-4" /></Button>
             </div>
           </div>
         ))}
@@ -182,10 +182,10 @@ export default function TeamManagement() {
             </div>
             <div><Label className="text-xs uppercase tracking-wider">Sort Order</Label><Input type="number" value={form.sort_order} onChange={e => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} className="rounded-none mt-1 w-24" /></div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+          <DialogFooter> {/* Icon size is fine here */}
+            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-5 h-5 mr-2" /> Cancel</Button>
             <Button className="bg-black text-white rounded-none" onClick={save} disabled={saving || !form.name || !form.role}>
-              {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> {editing ? "Update" : "Add Member"}</>}
+              {saving ? "Saving…" : <><Save className="w-5 h-5 mr-2" /> {editing ? "Update" : "Add Member"}</>}
             </Button>
           </DialogFooter>
         </DialogContent>

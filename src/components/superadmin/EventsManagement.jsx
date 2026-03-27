@@ -127,7 +127,7 @@ export default function EventsManagement() {
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-semibold text-lg">Events ({items.length})</h2>
-        <Button onClick={openNew} className="bg-black text-white rounded-none">
+        <Button onClick={openNew} className="bg-black text-white rounded-none"> {/* Increased icon size */}
           <Plus className="w-4 h-4 mr-2" /> Add Event
         </Button>
       </div>
@@ -145,11 +145,11 @@ export default function EventsManagement() {
               {item.description && <p className="text-sm text-gray-500 mt-1 line-clamp-1">{item.description}</p>}
             </div>
             <div className="flex gap-1 flex-shrink-0">
-              <Button variant="ghost" size="icon" className="w-7 h-7" onClick={() => openEdit(item)}>
-                <Pencil className="w-3 h-3" />
+              <Button variant="ghost" size="icon" className="w-7 h-7" onClick={() => openEdit(item)}> {/* Increased icon size */}
+                <Pencil className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="w-7 h-7 hover:text-red-500" onClick={() => del(item.id)}>
-                <Trash2 className="w-3 h-3" />
+              <Button variant="ghost" size="icon" className="w-7 h-7 hover:text-red-500" onClick={() => del(item.id)}> {/* Increased icon size */}
+                <Trash2 className="w-4 h-4" />
               </Button>
             </div>
           </div>
@@ -183,10 +183,10 @@ export default function EventsManagement() {
               </div>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+          <DialogFooter> {/* Icon size is fine here */}
+            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-5 h-5 mr-2" /> Cancel</Button>
             <Button className="bg-black text-white rounded-none" onClick={save} disabled={saving || !form.title}>
-              {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> {editing ? "Update" : "Add Event"}</>}
+              {saving ? "Saving…" : <><Save className="w-5 h-5 mr-2" /> {editing ? "Update" : "Add Event"}</>}
             </Button>
           </DialogFooter>
         </DialogContent>

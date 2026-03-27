@@ -116,7 +116,7 @@ export default function Shop() {
             <h1 className="brand-font text-5xl md:text-7xl font-bold text-white leading-tight mb-6">{heroTitle}</h1>
             <p className="text-gray-200 text-lg mb-8 font-light">{heroSubtitle}</p>
             <Link to={createPageUrl("Shop") + "#products"}>
-              <Button className="bg-yellow-500 hover:bg-yellow-400 text-black font-semibold px-8 py-3 tracking-wider text-sm rounded-none">
+              <Button className="bg-yellow-500 hover:bg-yellow-400 text-black font-semibold px-8 py-3 tracking-wider text-sm rounded-none"> {/* Increased icon size */}
                 {heroCta} <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             </Link>

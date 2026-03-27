@@ -80,10 +80,10 @@ export default function StoreManager() {
 
       <div className="flex bg-gray-100 mb-8 p-1 rounded-md w-max">
         <button onClick={() => setActiveTab("orders")} className={`flex items-center px-4 py-2 text-sm rounded-md transition-colors ${activeTab === "orders" ? 'bg-white shadow text-black font-medium' : 'text-gray-600 hover:text-gray-900'}`}>
-          <Package className="w-4 h-4 mr-2" /> Orders
+          <Package className="w-5 h-5 mr-2" /> Orders
         </button>
         <button onClick={() => setActiveTab("stock")} className={`flex items-center px-4 py-2 text-sm rounded-md transition-colors ${activeTab === "stock" ? 'bg-white shadow text-black font-medium' : 'text-gray-600 hover:text-gray-900'}`}>
-          <BarChart3 className="w-4 h-4 mr-2" /> Stock & Pricing
+          <BarChart3 className="w-5 h-5 mr-2" /> Stock & Pricing
         </button>
       </div>
 
@@ -149,7 +149,7 @@ export default function StoreManager() {
                     </td>
                     <td className="px-4 py-3">
                       <button className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-200 text-gray-600" onClick={() => setSelectedOrder(order)}><Eye className="w-4 h-4" /></button>
-                    </td>
+                    </td> {/* Icon size w-4 h-4 is fine here as it's a small button */}
                   </tr>
                 ))}
                 {filtered.length === 0 && <tr><td colSpan={7} className="text-center py-10 text-gray-400">No orders found</td></tr>}
