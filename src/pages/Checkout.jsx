@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, ShoppingBag, Package, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,7 +28,7 @@ export default function Checkout() {
     setCart(JSON.parse(localStorage.getItem("zookeepacart") || "[]"));
   }, [user]);
 
-  const total = cart.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0);
+  const total = cart.reduce((s, i) => s + parseFloat(i.price || 0) * (i.quantity || 1), 0);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,8 +66,12 @@ export default function Checkout() {
       <p className="text-gray-500 mb-1">Order #{orderNumber}</p>
       <p className="text-gray-500 mb-8">Thank you! We'll send updates to {user?.email}</p>
       <div className="flex gap-3">
-        <Button variant="outline" className="rounded-none px-6" onClick={() => navigate(createPageUrl("Shop"))}>Continue Shopping</Button>
-        <Button className="bg-black text-white rounded-none px-6" onClick={() => navigate(createPageUrl("MyOrders"))}>View Orders</Button>
+        <Button variant="outline" className="rounded-none px-6" onClick={() => navigate(createPageUrl("Shop"))}>
+          <ShoppingBag className="w-4 h-4 mr-2" /> Continue Shopping
+        </Button>
+        <Button className="bg-black text-white rounded-none px-6" onClick={() => navigate(createPageUrl("MyOrders"))}>
+          <Package className="w-4 h-4 mr-2" /> View Orders
+        </Button>
       </div>
     </div>
   );
@@ -107,7 +111,7 @@ export default function Checkout() {
             <Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} className="rounded-none mt-1" placeholder="+1 (555) 000-0000" />
           </div>
           <Button type="submit" disabled={loading} className="w-full h-12 bg-black hover:bg-gray-900 text-white rounded-none tracking-wider text-sm mt-4">
-            {loading ? "Placing Order…" : `Place Order · R${total.toFixed(2)}`}
+            {loading ? "Placing Order…" : <><Check className="w-4 h-4 mr-2" /> Place Order · R${total.toFixed(2)}</>}
           </Button>
         </form>
 
@@ -124,7 +128,7 @@ export default function Checkout() {
                   <p className="text-sm font-medium">{item.product_name}</p>
                   <p className="text-xs text-gray-400">{item.size} · x{item.quantity}</p>
                 </div>
-                <p className="text-sm font-medium">R{((item.price || 0) * (item.quantity || 1)).toFixed(2)}</p>
+                <p className="text-sm font-medium">R{(parseFloat(item.price || 0) * (item.quantity || 1)).toFixed(2)}</p>
               </div>
             ))}
           </div>

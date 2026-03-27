@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { ChevronDown, ShoppingBag } from "lucide-react";
+import { ChevronDown, ShoppingBag, Compass } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function HeroSection() {
   const [heroImage, setHeroImage] = useState(null);
+  const [slideshowImages, setSlideshowImages] = useState([]);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [heroData, setHeroData] = useState({
     title: "ZOO<span className=\"text-yellow-400\">KEEPA</span>",
     subtitle: "More than clothing — a movement. Bold designs, wild spirit, African soul.",
@@ -27,6 +29,12 @@ export default function HeroSection() {
           if (settings.hero_image_id) {
             setHeroImage(`/api/images/${settings.hero_image_id}`);
           }
+          if (settings.hero_images) {
+            try {
+              const images = typeof settings.hero_images === 'string' ? JSON.parse(settings.hero_images) : settings.hero_images;
+              setSlideshowImages(Array.isArray(images) ? images : []);
+            } catch(e) {}
+          }
         }
       })
       .catch(err => console.error('Failed to load hero settings:', err));
@@ -34,11 +42,26 @@ export default function HeroSection() {
 
   const defaultBackgroundImage = "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=80";
 
+  // Slideshow effect
+  useEffect(() => {
+    const images = heroImage ? [heroImage, ...slideshowImages] : slideshowImages;
+    if (images.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setCurrentSlideIndex(prev => (prev + 1) % images.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [heroImage, slideshowImages]);
+
+  const imagesToShow = heroImage ? [heroImage, ...slideshowImages] : slideshowImages.length > 0 ? slideshowImages : [defaultBackgroundImage];
+  const activeImage = imagesToShow[currentSlideIndex] || defaultBackgroundImage;
+
   return (
     <section
-      className="relative h-screen bg-cover bg-center flex flex-col items-center justify-center"
+      className="relative h-screen bg-cover bg-center flex flex-col items-center justify-center transition-all duration-1000"
       style={{
-        backgroundImage: `url(${heroImage || defaultBackgroundImage})`
+        backgroundImage: `url(${activeImage})`
       }}
     >
       <div className="absolute inset-0 bg-black/60" />
@@ -58,7 +81,7 @@ export default function HeroSection() {
           </Button>
           <Button asChild variant="outline" className="border-white text-white hover:bg-white hover:text-black px-10 py-3 tracking-widest text-sm rounded-none h-12 bg-transparent">
             <a href="#gallery">
-              Explore
+              <Compass className="w-4 h-4 mr-2 inline" /> Explore
             </a>
           </Button>
         </div>

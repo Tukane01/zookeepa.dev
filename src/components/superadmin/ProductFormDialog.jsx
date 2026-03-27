@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Upload } from "lucide-react";
+import { Upload, ImageIcon, Plus, X, Save } from "lucide-react";
 
 export default function ProductFormDialog({ product, onClose }) {
   const queryClient = useQueryClient();
@@ -158,7 +158,7 @@ export default function ProductFormDialog({ product, onClose }) {
                       setImagePreviewUrl("");
                     }}
                   >
-                    Change Image
+                    <ImageIcon className="w-4 h-4 mr-2" /> Change Image
                   </Button>
                 </div>
               ) : (
@@ -271,7 +271,7 @@ export default function ProductFormDialog({ product, onClose }) {
                 onChange={(e) => setColorInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addColor())}
               />
-              <Button type="button" onClick={addColor}>Add</Button>
+              <Button type="button" onClick={addColor}><Plus className="w-4 h-4 mr-2" /> Add</Button>
             </div>
             <div className="flex gap-2 mt-2 flex-wrap">
               {formData.colors.map((color) => (
@@ -319,14 +319,16 @@ export default function ProductFormDialog({ product, onClose }) {
 
           <div className="flex justify-end gap-3 pt-4 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              <X className="w-4 h-4 mr-2" /> Cancel
             </Button>
             <Button
               type="submit"
               disabled={saveMutation.isPending || uploading}
               className="bg-black hover:bg-gray-800 text-white"
             >
-              {saveMutation.isPending ? 'Saving...' : (product ? 'Update Product' : 'Create Product')}
+              {saveMutation.isPending ? 'Saving...' : (
+                <><Save className="w-4 h-4 mr-2" /> {product ? 'Update Product' : 'Create Product'}</>
+              )}
             </Button>
           </div>
         </form>

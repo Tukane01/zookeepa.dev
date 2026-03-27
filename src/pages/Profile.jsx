@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { User, Save, CheckCircle } from "lucide-react";
+import { User, Save, CheckCircle, Trash2 } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import { usersAPI } from "@/api/apiService";
 
@@ -80,7 +80,7 @@ export default function Profile() {
       <h1 className="text-4xl font-bold text-gray-900 mb-4">My Profile</h1>
       <div className="mb-6">
         <Button variant="destructive" className="rounded-none" onClick={handleDeleteAccount}>
-          Delete My Account
+          <Trash2 className="w-4 h-4 mr-2" /> Delete My Account
         </Button>
       </div>
       <div className="space-y-6">

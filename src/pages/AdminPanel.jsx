@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
-import { Package, Megaphone, Plus, Pencil, Trash2, ToggleLeft, ToggleRight, Image } from "lucide-react";
+import { Package, Megaphone, Plus, Pencil, Trash2, ToggleLeft, ToggleRight, Image, X, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -269,7 +269,7 @@ export default function AdminPanel() {
                 <Input value={siteForm.hero_cta_text} onChange={e => setSiteForm({ ...siteForm, hero_cta_text: e.target.value })} className="rounded-none mt-1" placeholder="Explore Collection" />
               </div>
               <Button onClick={saveSiteSettings} disabled={saving} className="bg-black text-white rounded-none px-8">
-                {saving ? "Saving…" : "Save Settings"}
+                {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> Save Settings</>}
               </Button>
             </div>
           </div>
@@ -338,9 +338,9 @@ export default function AdminPanel() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" className="rounded-none" onClick={() => setProductDialog(false)}>Cancel</Button>
+            <Button variant="outline" className="rounded-none" onClick={() => setProductDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
             <Button className="bg-black text-white rounded-none" onClick={saveProduct} disabled={saving || !pForm.name || !pForm.price}>
-              {saving ? "Saving…" : editProduct ? "Update Product" : "Add Product"}
+              {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> {editProduct ? "Update Product" : "Add Product"}</>}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -396,9 +396,9 @@ export default function AdminPanel() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" className="rounded-none" onClick={() => setPromoDialog(false)}>Cancel</Button>
+            <Button variant="outline" className="rounded-none" onClick={() => setPromoDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
             <Button className="bg-black text-white rounded-none" onClick={savePromo} disabled={saving || !promoForm.title || !promoForm.message}>
-              {saving ? "Saving…" : editPromo ? "Update" : "Add Promotion"}
+              {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> {editPromo ? "Update" : "Add Promotion"}</>}
             </Button>
           </DialogFooter>
         </DialogContent>

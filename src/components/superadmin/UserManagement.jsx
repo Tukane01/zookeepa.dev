@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { User, Plus, Trash2, UserX, UserCheck } from "lucide-react";
+import { User, Plus, Trash2, UserX, UserCheck, X, Mail } from "lucide-react";
 import { usersAPI } from "@/api/apiService";
 
 const ROLE_LABELS = { user: "Customer", admin: "Admin", super_admin: "Super Admin", store_manager: "Store Manager", suspended: "Suspended" };
@@ -203,8 +203,10 @@ export default function UserManagement() {
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" className="rounded-none" onClick={() => setInviteDialog(false)}>Cancel</Button>
-                <Button className="bg-black text-white rounded-none" onClick={handleInvite} disabled={inviting || !inviteForm.email}>{inviting ? "Sending…" : "Send Invite"}</Button>
+                <Button variant="outline" className="rounded-none" onClick={() => setInviteDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+                <Button className="bg-black text-white rounded-none" onClick={handleInvite} disabled={inviting || !inviteForm.email}>
+                  {inviting ? "Sending…" : <><Mail className="w-4 h-4 mr-2" /> Send Invite</>}
+                </Button>
               </DialogFooter>
             </>
           )}

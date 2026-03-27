@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Briefcase, MapPin, ChevronDown, ChevronUp } from "lucide-react";
+import { Briefcase, MapPin, ChevronDown, ChevronUp, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function CareersSection({ careers }) {
@@ -49,7 +49,7 @@ export default function CareersSection({ careers }) {
                   <p className="text-gray-300 text-sm leading-relaxed mb-4">{job.description}</p>
               <Button asChild className="bg-yellow-500 hover:bg-yellow-400 text-black rounded-none text-xs tracking-wider px-6">
                 <a href={`mailto:careers@zookeepa.com?subject=Application: ${job.title}`}>
-                      Apply Now
+                      <Send className="w-4 h-4 mr-2 inline" /> Apply Now
                 </a>
               </Button>
                 </div>

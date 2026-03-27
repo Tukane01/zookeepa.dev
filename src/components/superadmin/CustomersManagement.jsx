@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { User, Mail, UserX, UserCheck, Trash2, Search, Send, Users } from "lucide-react";
+import { User, Mail, UserX, UserCheck, Trash2, Search, Send, Users, X } from "lucide-react";
 
 export default function CustomersManagement() {
   const [customers, setCustomers] = useState([]);
@@ -194,7 +194,7 @@ export default function CustomersManagement() {
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" className="rounded-none" onClick={() => setEmailDialog(false)}>Cancel</Button>
+                <Button variant="outline" className="rounded-none" onClick={() => setEmailDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
                 <Button className="bg-black text-white rounded-none" onClick={sendEmail} disabled={sending || !emailForm.subject || !emailForm.body}>
                   {sending ? "Sending…" : <><Send className="w-4 h-4 mr-2" /> Send Email</>}
                 </Button>
@@ -233,7 +233,7 @@ export default function CustomersManagement() {
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" className="rounded-none" onClick={() => setBulkEmailDialog(false)}>Cancel</Button>
+                <Button variant="outline" className="rounded-none" onClick={() => setBulkEmailDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
                 <Button className="bg-yellow-500 hover:bg-yellow-400 text-black font-semibold rounded-none" onClick={sendBulkEmail} disabled={sending || !emailForm.subject || !emailForm.body}>
                   {sending ? `Sending to ${activeCount} customers…` : <><Send className="w-4 h-4 mr-2" /> Send to All ({activeCount})</>}
                 </Button>

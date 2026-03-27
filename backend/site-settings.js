@@ -40,15 +40,22 @@ router.post('/', authenticateToken, authorizeRoles('admin', 'super_admin'), asyn
     } = req.body;
 
     const [result] = await pool.query(
-      `INSERT INTO site_settings (hero_image_id, hero_images, hero_title, hero_subtitle, hero_cta_text,
+      `INSERT INTO site_settings (setting_key, hero_image_id, hero_images, hero_title, hero_subtitle, hero_cta_text,
        contact_address, contact_city, contact_province, contact_zip, contact_country,
        contact_phone, contact_email, contact_hours, map_lat, map_lng)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       VALUES ('main', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE
+       hero_image_id=VALUES(hero_image_id), hero_images=VALUES(hero_images), hero_title=VALUES(hero_title),
+       hero_subtitle=VALUES(hero_subtitle), hero_cta_text=VALUES(hero_cta_text),
+       contact_address=VALUES(contact_address), contact_city=VALUES(contact_city),
+       contact_province=VALUES(contact_province), contact_zip=VALUES(contact_zip), contact_country=VALUES(contact_country),
+       contact_phone=VALUES(contact_phone), contact_email=VALUES(contact_email), contact_hours=VALUES(contact_hours),
+       map_lat=VALUES(map_lat), map_lng=VALUES(map_lng)`,
       [hero_image_id, JSON.stringify(hero_images || []), hero_title, hero_subtitle, hero_cta_text,
        contact_address, contact_city, contact_province, contact_zip, contact_country || 'South Africa',
        contact_phone, contact_email, contact_hours, map_lat || -26.2041, map_lng || 28.0473]
     );
-    res.status(201).json({ message: 'Site settings created', id: result.insertId });
+    res.json({ message: 'Site settings saved' });
   } catch (error) {
     console.error('Create site settings error:', error.message);
     res.status(500).json({ message: 'Server error creating site settings' });

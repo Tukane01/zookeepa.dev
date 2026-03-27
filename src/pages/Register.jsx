@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authAPI } from '@/api/apiService';
 import { useAuth } from '@/lib/AuthContext';
+import { UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -54,7 +55,7 @@ export default function Register() {
           </div>
           {error && <p className="text-sm text-red-600">{error}</p>}
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Creating account…' : 'Create account'}
+            {loading ? 'Creating account…' : <><UserPlus className="w-4 h-4 mr-2" /> Create account</>}
           </Button>
         </form>
         <p className="mt-6 text-sm text-gray-600">

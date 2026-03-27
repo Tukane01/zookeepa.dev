@@ -5,8 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight, X, Save } from "lucide-react";
 
 const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];
 
@@ -17,24 +17,92 @@ export default function CareersManagement() {
   const [form, setForm] = useState({ title: "", department: "", type: "Full-time", location: "", description: "", is_open: true });
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => { load(); }, []);
-  const load = async () => setItems([]);
+  useEffect(() => {
+    load();
+  }, []);
+
+  const load = async () => {
+    try {
+      const response = await fetch('/api/careers', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      const data = await response.json();
+      setItems(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Failed to load careers:', error);
+      setItems([]);
+    }
+  };
 
   const openNew = () => { setEditing(null); setForm({ title: "", department: "", type: "Full-time", location: "", description: "", is_open: true }); setDialog(true); };
   const openEdit = (item) => { setEditing(item); setForm({ title: item.title, department: item.department, type: item.type || "Full-time", location: item.location || "", description: item.description || "", is_open: item.is_open !== false }); setDialog(true); };
 
   const save = async () => {
     setSaving(true);
-    if (editing) { setItems(items.map(i => i.id === editing.id ? { ...i, ...form } : i)); }
-    else { const c = { id: Date.now().toString(), ...form }; setItems([c, ...items]); }
-    setSaving(false); setDialog(false);
+    try {
+      const method = editing ? 'PUT' : 'POST';
+      const url = editing ? `/api/careers/${editing.id}` : '/api/careers';
+
+      const payload = {
+        title: form.title,
+        department: form.department,
+        type: form.type || "Full-time",
+        location: form.location || "",
+        description: form.description || "",
+        is_open: form.is_open // Send as boolean
+      };
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) {
+        const errData = await response.json().catch(() => null);
+        throw new Error(errData?.error || errData?.message || `Save failed with status ${response.status}`);
+      }
+      await load();
+      setDialog(false);
+    } catch (error) {
+      console.error('Save error:', error);
+      alert(`Failed to save position: ${error.message}`);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const toggle = async (item) => {
-    setItems(items.map(i => i.id === item.id ? { ...i, is_open: !i.is_open } : i));
+    try {
+      const response = await fetch(`/api/careers/${item.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ ...item, is_open: !item.is_open }) // Send as boolean
+      });
+      if (!response.ok) throw new Error('Toggle failed');
+      await load();
+    } catch (error) {
+      console.error('Toggle error:', error);
+    }
   };
 
-  const del = async (id) => { if (!confirm("Delete this career posting?")) return; setItems(items.filter(i => i.id !== id)); };
+  const del = async (id) => {
+    if (!confirm("Delete this career posting?")) return;
+    try {
+      await fetch(`/api/careers/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      await load();
+    } catch (error) {
+      console.error('Delete error:', error);
+    }
+  };
 
   const TYPE_COLORS = { "Full-time": "bg-green-100 text-green-800", "Part-time": "bg-blue-100 text-blue-800", "Contract": "bg-purple-100 text-purple-800", "Internship": "bg-yellow-100 text-yellow-800" };
 
@@ -77,7 +145,12 @@ export default function CareersManagement() {
 
       <Dialog open={dialog} onOpenChange={setDialog}>
         <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>{editing ? "Edit Position" : "Add Career Position"}</DialogTitle></DialogHeader>
+          <DialogHeader>
+            <DialogTitle>{editing ? "Edit Position" : "Add Career Position"}</DialogTitle>
+            <DialogDescription>
+              {editing ? "Update the details for this career position." : "Fill in the details to add a new open position."}
+            </DialogDescription>
+          </DialogHeader>
           <div className="space-y-3 py-2">
             <div><Label className="text-xs uppercase tracking-wider">Job Title *</Label><Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} className="rounded-none mt-1" /></div>
             <div className="grid grid-cols-2 gap-3">
@@ -95,8 +168,10 @@ export default function CareersManagement() {
             <div className="flex items-center gap-3"><Switch checked={form.is_open} onCheckedChange={v => setForm({ ...form, is_open: v })} /><Label className="text-sm">Position is Open</Label></div>
           </div>
           <DialogFooter>
-            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}>Cancel</Button>
-            <Button className="bg-black text-white rounded-none" onClick={save} disabled={saving || !form.title || !form.department}>{saving ? "Saving…" : editing ? "Update" : "Add Position"}</Button>
+            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+            <Button className="bg-black text-white rounded-none" onClick={save} disabled={saving || !form.title || !form.department}>
+              {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> {editing ? "Update" : "Add Position"}</>}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -210,7 +210,7 @@ export default function StoreManager() {
                           <span>Unit: <strong>R{item.price?.toFixed(2)}</strong></span>
                         </div>
                       </div>
-                      <p className="font-bold text-sm">R{((item.price || 0) * (item.quantity || 1)).toFixed(2)}</p>
+                      <p className="font-bold text-sm">R{(parseFloat(item.price || 0) * (item.quantity || 1)).toFixed(2)}</p>
                     </div>
                   ))}
                 </div>

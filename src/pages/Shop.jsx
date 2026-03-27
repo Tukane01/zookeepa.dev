@@ -50,7 +50,7 @@ export default function Shop() {
       cart.push({
         product_id: product.id,
         product_name: product.name,
-        price: product.sale_price || product.price,
+        price: parseFloat(product.sale_price || product.price || 0),
         quantity: 1,
         size: product.sizes?.[0] || "",
         color: product.colors?.[0] || "",
@@ -178,8 +178,10 @@ export default function Shop() {
 }
 
 function ProductCard({ product, onAddToCart }) {
-  const hasDiscount = product.sale_price && product.sale_price < product.price;
-  const discountPct = hasDiscount ? Math.round((1 - product.sale_price / product.price) * 100) : 0;
+  const price = parseFloat(product.price || 0);
+  const salePrice = product.sale_price ? parseFloat(product.sale_price) : null;
+  const hasDiscount = salePrice && salePrice < price;
+  const discountPct = hasDiscount ? Math.round((1 - salePrice / price) * 100) : 0;
 
   return (
     <div className="group relative">
@@ -209,11 +211,11 @@ function ProductCard({ product, onAddToCart }) {
         <div className="flex items-center gap-2 mt-1">
           {hasDiscount ? (
             <>
-              <span className="text-sm font-semibold text-red-600">R{product.sale_price?.toFixed(2)}</span>
-              <span className="text-xs text-gray-400 line-through">R{product.price?.toFixed(2)}</span>
+              <span className="text-sm font-semibold text-red-600">R{salePrice.toFixed(2)}</span>
+              <span className="text-xs text-gray-400 line-through">R{price.toFixed(2)}</span>
             </>
           ) : (
-            <span className="text-sm font-semibold">R{product.price?.toFixed(2)}</span>
+            <span className="text-sm font-semibold">R{price.toFixed(2)}</span>
           )}
         </div>
         <p className="text-xs text-gray-400 mt-1 capitalize">{product.category}</p>

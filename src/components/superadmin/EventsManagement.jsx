@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Plus, Pencil, Trash2, Calendar, MapPin } from "lucide-react";
+import { Plus, Pencil, Trash2, Calendar, MapPin, X, Save } from "lucide-react";
 import ImageUpload from "@/components/ui/ImageUpload";
 
 export default function EventsManagement() {
@@ -184,8 +184,10 @@ export default function EventsManagement() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}>Cancel</Button>
-            <Button className="bg-black text-white rounded-none" onClick={save} disabled={saving || !form.title}>{saving ? "Saving…" : editing ? "Update" : "Add Event"}</Button>
+            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+            <Button className="bg-black text-white rounded-none" onClick={save} disabled={saving || !form.title}>
+              {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> {editing ? "Update" : "Add Event"}</>}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

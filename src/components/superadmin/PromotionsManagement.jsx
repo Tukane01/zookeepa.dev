@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight, Megaphone } from "lucide-react";
+import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight, Megaphone, X, Save } from "lucide-react";
 
 const PROMO_TYPES = ["announcement", "competition", "sale", "new_arrival"];
 
@@ -17,21 +17,78 @@ export default function PromotionsManagement() {
   const [form, setForm] = useState({ title: "", message: "", type: "announcement", is_active: true, background_color: "#D4AF37", text_color: "#1a1a1a", cta_text: "", sort_order: 0 });
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => { load(); }, []);
-  const load = async () => setItems([]);
+  useEffect(() => {
+    load();
+  }, []);
+
+  const load = async () => {
+    try {
+      const response = await fetch('/api/promotions', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      const data = await response.json();
+      setItems(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Failed to load promotions:', error);
+      setItems([]);
+    }
+  };
 
   const openNew = () => { setEditing(null); setForm({ title: "", message: "", type: "announcement", is_active: true, background_color: "#D4AF37", text_color: "#1a1a1a", cta_text: "", sort_order: 0 }); setDialog(true); };
   const openEdit = (p) => { setEditing(p); setForm({ title: p.title, message: p.message, type: p.type || "announcement", is_active: p.is_active !== false, background_color: p.background_color || "#D4AF37", text_color: p.text_color || "#1a1a1a", cta_text: p.cta_text || "", sort_order: p.sort_order || 0 }); setDialog(true); };
 
   const save = async () => {
     setSaving(true);
-    if (editing) { setItems(items.map(i => i.id === editing.id ? { ...i, ...form } : i)); }
-    else { const c = { id: Date.now().toString(), ...form }; setItems([c, ...items]); }
-    setSaving(false); setDialog(false);
+    try {
+      const method = editing ? 'PUT' : 'POST';
+      const url = editing ? `/api/promotions/${editing.id}` : '/api/promotions';
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(form)
+      });
+      if (!response.ok) throw new Error('Save failed');
+      await load();
+      setDialog(false);
+    } catch (error) {
+      console.error('Save error:', error);
+      alert('Failed to save promotion');
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const toggle = async (p) => { setItems(items.map(i => i.id === p.id ? { ...i, is_active: !i.is_active } : i)); };
-  const del = async (id) => { if (!confirm("Delete this promotion?")) return; setItems(items.filter(i => i.id !== id)); };
+  const toggle = async (p) => {
+    try {
+      await fetch(`/api/promotions/${p.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ ...p, is_active: !p.is_active })
+      });
+      await load();
+    } catch (error) {
+      console.error('Toggle error:', error);
+    }
+  };
+
+  const del = async (id) => {
+    if (!confirm("Delete this promotion?")) return;
+    try {
+      await fetch(`/api/promotions/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      await load();
+    } catch (error) {
+      console.error('Delete error:', error);
+    }
+  };
 
   return (
     <div>
@@ -91,8 +148,10 @@ export default function PromotionsManagement() {
             <div className="flex items-center gap-3"><Switch checked={form.is_active} onCheckedChange={v => setForm({ ...form, is_active: v })} /><Label className="text-sm">Show on shop page</Label></div>
           </div>
           <DialogFooter>
-            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}>Cancel</Button>
-            <Button className="bg-black text-white rounded-none" onClick={save} disabled={saving || !form.title || !form.message}>{saving ? "Saving…" : editing ? "Update" : "Add Promotion"}</Button>
+            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+            <Button className="bg-black text-white rounded-none" onClick={save} disabled={saving || !form.title || !form.message}>
+              {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> {editing ? "Update" : "Add Promotion"}</>}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createPageUrl } from "@/utils";
-import { Package, ChevronDown, ChevronUp, ShoppingBag } from "lucide-react";
+import { Package, ChevronDown, ChevronUp, ShoppingBag, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/AuthContext";
@@ -44,7 +44,9 @@ export default function MyOrders() {
   if (!user) return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
       <p className="text-gray-500 mb-4">Sign in to view your orders</p>
-      <Button className="bg-black text-white rounded-none px-6" onClick={() => window.location.href = '/login'}>Sign In</Button>
+      <Button className="bg-black text-white rounded-none px-6" onClick={() => window.location.href = '/login'}>
+        <LogIn className="w-4 h-4 mr-2" /> Sign In
+      </Button>
     </div>
   );
 
@@ -53,7 +55,11 @@ export default function MyOrders() {
       <Package className="w-16 h-16 text-gray-200 mb-4" />
       <h2 className="brand-font text-3xl font-semibold mb-2">No Orders Yet</h2>
       <p className="text-gray-500 mb-6">Start shopping to see your orders here</p>
-      <Link to={createPageUrl("Shop")}><Button className="bg-black text-white rounded-none px-8">Shop Now</Button></Link>
+      <Link to={createPageUrl("Shop")}>
+        <Button className="bg-black text-white rounded-none px-8">
+          <ShoppingBag className="w-4 h-4 mr-2" /> Shop Now
+        </Button>
+      </Link>
     </div>
   );
 
@@ -94,7 +100,7 @@ export default function MyOrders() {
                         <p className="text-sm font-medium">{item.product_name}</p>
                         <p className="text-xs text-gray-500">Size: {item.size} · Qty: {item.quantity}</p>
                       </div>
-                      <p className="text-sm font-medium">R{((item.price || 0) * (item.quantity || 1)).toFixed(2)}</p>
+                      <p className="text-sm font-medium">R{(parseFloat(item.price || 0) * (item.quantity || 1)).toFixed(2)}</p>
                     </div>
                   ))}
                 </div>

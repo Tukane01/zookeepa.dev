@@ -4,29 +4,72 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Plus, Pencil, Trash2, Handshake } from "lucide-react";
+import { Plus, Pencil, Trash2, Handshake, X, Save } from "lucide-react";
+import ImageUpload from "@/components/ui/ImageUpload";
 
 export default function PartnersManagement() {
   const [items, setItems] = useState([]);
   const [dialog, setDialog] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({ name: "", logo_url: "", website_url: "", description: "" });
+  const [form, setForm] = useState({ name: "", logo_id: null, website_url: "", description: "" });
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => { load(); }, []);
-  const load = async () => setItems([]);
+  useEffect(() => {
+    load();
+  }, []);
 
-  const openNew = () => { setEditing(null); setForm({ name: "", logo_url: "", website_url: "", description: "" }); setDialog(true); };
-  const openEdit = (item) => { setEditing(item); setForm({ name: item.name, logo_url: item.logo_url || "", website_url: item.website_url || "", description: item.description || "" }); setDialog(true); };
+  const load = async () => {
+    try {
+      const response = await fetch('/api/partners', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      const data = await response.json();
+      setItems(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Failed to load partners:', error);
+      setItems([]);
+    }
+  };
+
+  const openNew = () => { setEditing(null); setForm({ name: "", logo_id: null, website_url: "", description: "" }); setDialog(true); };
+  const openEdit = (item) => { setEditing(item); setForm({ name: item.name, logo_id: item.logo_id || null, website_url: item.website_url || "", description: item.description || "" }); setDialog(true); };
 
   const save = async () => {
     setSaving(true);
-    if (editing) { setItems(items.map(i => i.id === editing.id ? { ...i, ...form } : i)); }
-    else { const c = { id: Date.now().toString(), ...form }; setItems([...items, c]); }
-    setSaving(false); setDialog(false);
+    try {
+      const method = editing ? 'PUT' : 'POST';
+      const url = editing ? `/api/partners/${editing.id}` : '/api/partners';
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(form)
+      });
+      if (!response.ok) throw new Error('Save failed');
+      await load();
+      setDialog(false);
+    } catch (error) {
+      console.error('Save error:', error);
+      alert('Failed to save partner');
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const del = async (id) => { if (!confirm("Remove this partner?")) return; setItems(items.filter(i => i.id !== id)); };
+  const del = async (id) => {
+    if (!confirm("Remove this partner?")) return;
+    try {
+      await fetch(`/api/partners/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      await load();
+    } catch (error) {
+      console.error('Delete error:', error);
+    }
+  };
 
   return (
     <div>
@@ -39,7 +82,7 @@ export default function PartnersManagement() {
         {items.map(item => (
           <div key={item.id} className="border border-gray-200 p-4 flex items-start gap-3">
             <div className="w-12 h-12 bg-gray-100 flex items-center justify-center flex-shrink-0 rounded">
-              {item.logo_url ? <img src={item.logo_url} alt={item.name} className="w-full h-full object-contain" /> : <Handshake className="w-6 h-6 text-gray-400" />}
+              {item.logo_id ? <img src={`/api/images/${item.logo_id}`} alt={item.name} className="w-full h-full object-contain" /> : <Handshake className="w-6 h-6 text-gray-400" />}
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-sm">{item.name}</h3>
@@ -67,15 +110,22 @@ export default function PartnersManagement() {
             <div><Label className="text-xs uppercase tracking-wider">Partner Name *</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="rounded-none mt-1" /></div>
             <div><Label className="text-xs uppercase tracking-wider">Description</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className="rounded-none mt-1" rows={2} /></div>
             <div>
-              <Label className="text-xs uppercase tracking-wider">Logo URL</Label>
-              <Input value={form.logo_url} onChange={e => setForm({ ...form, logo_url: e.target.value })} className="rounded-none mt-1" placeholder="https://..." />
-              {form.logo_url && <img src={form.logo_url} alt="" className="mt-2 h-12 object-contain" />}
+              <Label className="text-xs uppercase tracking-wider">Partner Logo</Label>
+              <div className="mt-1">
+                <ImageUpload
+                  onImageUploaded={(img) => setForm(f => ({ ...f, logo_id: img ? img.id : null }))}
+                  currentImageId={form.logo_id}
+                  altText={form.name}
+                />
+              </div>
             </div>
             <div><Label className="text-xs uppercase tracking-wider">Website URL</Label><Input value={form.website_url} onChange={e => setForm({ ...form, website_url: e.target.value })} className="rounded-none mt-1" placeholder="https://..." /></div>
           </div>
           <DialogFooter>
-            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}>Cancel</Button>
-            <Button className="bg-black text-white rounded-none" onClick={save} disabled={saving || !form.name}>{saving ? "Saving…" : editing ? "Update" : "Add Partner"}</Button>
+            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+            <Button className="bg-black text-white rounded-none" onClick={save} disabled={saving || !form.name}>
+              {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> {editing ? "Update" : "Add Partner"}</>}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

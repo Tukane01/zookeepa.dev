@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Trash2, Image, MapPin, Phone } from "lucide-react";
+import { Plus, Trash2, Image, MapPin, Phone, Save } from "lucide-react";
 import ImageUpload from "@/components/ui/ImageUpload";
 
 export default function SiteSettingsManagement() {
@@ -34,12 +34,16 @@ export default function SiteSettingsManagement() {
       if (data && data.length > 0) {
         const s = data[0];
         setSettings(s);
+        let parsedHeroImages = [];
+        try {
+          parsedHeroImages = typeof s.hero_images === 'string' ? JSON.parse(s.hero_images) : (s.hero_images || []);
+        } catch(e) {}
         setForm({
           hero_title: s.hero_title || "",
           hero_subtitle: s.hero_subtitle || "",
           hero_cta_text: s.hero_cta_text || "",
           hero_image_id: s.hero_image_id || null,
-          hero_images: s.hero_images || [],
+          hero_images: parsedHeroImages,
           contact_address: s.contact_address || "",
           contact_city: s.contact_city || "",
           contact_province: s.contact_province || "",
@@ -62,8 +66,13 @@ export default function SiteSettingsManagement() {
   const save = async () => {
     setSaving(true);
     try {
-      const method = settings ? 'PUT' : 'POST';
-      const url = settings ? `/api/site-settings/${settings.id}` : '/api/site-settings';
+      const method = settings && settings.id ? 'PUT' : 'POST';
+      const url = settings && settings.id ? `/api/site-settings/${settings.id}` : '/api/site-settings';
+
+      const payload = { ...form };
+      if (Array.isArray(payload.hero_images)) {
+        payload.hero_images = JSON.stringify(payload.hero_images);
+      }
 
       const response = await fetch(url, {
         method,
@@ -71,17 +80,20 @@ export default function SiteSettingsManagement() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify(form)
+        body: JSON.stringify(payload)
       });
 
-      if (!response.ok) throw new Error('Save failed');
+      if (!response.ok) {
+        const errData = await response.json().catch(() => null);
+        throw new Error(errData?.error || errData?.message || 'Save failed');
+      }
 
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
       await load(); // Reload to get updated data
     } catch (error) {
       console.error('Save error:', error);
-      alert('Failed to save settings');
+      alert(`Failed to save settings: ${error.message}`);
     } finally {
       setSaving(false);
     }
@@ -173,7 +185,9 @@ export default function SiteSettingsManagement() {
       </Tabs>
 
       <div className="mt-6 flex items-center gap-4">
-        <Button onClick={save} disabled={saving} className="bg-black text-white rounded-none px-8">{saving ? "Saving…" : "Save All Settings"}</Button>
+        <Button onClick={save} disabled={saving} className="bg-black text-white rounded-none px-8">
+          {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> Save All Settings</>}
+        </Button>
         {saved && <span className="text-green-600 text-sm font-medium">✓ Saved!</span>}
       </div>
     </div>

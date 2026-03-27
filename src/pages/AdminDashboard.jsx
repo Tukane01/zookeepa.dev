@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Package, DollarSign, ShoppingBag } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Package, DollarSign, ShoppingBag, X } from "lucide-react";
 import { format } from "date-fns";
 import { useAuth } from "@/lib/AuthContext";
 
@@ -196,7 +197,9 @@ export default function AdminDashboard() {
           <div className="bg-white p-6 rounded-lg max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">Order #{selectedOrder.order_number}</h2>
             <p className="mb-6 text-gray-600">Order details management coming soon.</p>
-            <button onClick={() => setSelectedOrder(null)} className="px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800 transition-colors">Close</button>
+            <Button onClick={() => setSelectedOrder(null)} className="w-full bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800 transition-colors">
+              <X className="w-4 h-4 mr-2" /> Close
+            </Button>
           </div>
         </div>
       )}

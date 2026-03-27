@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Plus, Pencil, Trash2, User } from "lucide-react";
+import { Plus, Pencil, Trash2, User, X, Save } from "lucide-react";
 import ImageUpload from "@/components/ui/ImageUpload";
 
 export default function TeamManagement() {
@@ -183,8 +183,10 @@ export default function TeamManagement() {
             <div><Label className="text-xs uppercase tracking-wider">Sort Order</Label><Input type="number" value={form.sort_order} onChange={e => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} className="rounded-none mt-1 w-24" /></div>
           </div>
           <DialogFooter>
-            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}>Cancel</Button>
-            <Button className="bg-black text-white rounded-none" onClick={save} disabled={saving || !form.name || !form.role}>{saving ? "Saving…" : editing ? "Update" : "Add Member"}</Button>
+            <Button variant="outline" className="rounded-none" onClick={() => setDialog(false)}><X className="w-4 h-4 mr-2" /> Cancel</Button>
+            <Button className="bg-black text-white rounded-none" onClick={save} disabled={saving || !form.name || !form.role}>
+              {saving ? "Saving…" : <><Save className="w-4 h-4 mr-2" /> {editing ? "Update" : "Add Member"}</>}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

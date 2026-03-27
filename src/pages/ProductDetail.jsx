@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createPageUrl } from "@/utils";
 import { Link } from "react-router-dom";
-import { ShoppingBag, ChevronLeft, Check } from "lucide-react";
+import { ShoppingBag, ChevronLeft, Check, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function ProductDetail() {
@@ -42,7 +42,15 @@ export default function ProductDetail() {
     const existing = cart.find(i => i.product_id + i.size + i.color === key);
     if (existing) { existing.quantity += quantity; }
     else {
-      cart.push({ product_id: product.id, product_name: product.name, price: product.sale_price || product.price, quantity, size: selectedSize, color: selectedColor, image_url: product.image_url || "" });
+      cart.push({ 
+        product_id: product.id, 
+        product_name: product.name, 
+        price: parseFloat(product.sale_price || product.price || 0), 
+        quantity, 
+        size: selectedSize, 
+        color: selectedColor, 
+        image_url: product.image_url || "" 
+      });
     }
     localStorage.setItem("zookeepacart", JSON.stringify(cart));
     window.dispatchEvent(new Event("cartUpdated"));
@@ -55,13 +63,17 @@ export default function ProductDetail() {
     <div className="min-h-screen flex flex-col items-center justify-center px-4">
       <p className="text-gray-500 mb-4">Product not found.</p>
       <Link to={createPageUrl("Shop")}>
-        <Button className="bg-black text-white rounded-none">Return to Shop</Button>
+        <Button className="bg-black text-white rounded-none">
+          <ArrowLeft className="w-4 h-4 mr-2" /> Return to Shop
+        </Button>
       </Link>
     </div>
   );
 
   const images = [product.image_url, ...(product.additional_images || [])].filter(Boolean);
-  const hasDiscount = product.sale_price && product.sale_price < product.price;
+  const price = parseFloat(product.price || 0);
+  const salePrice = product.sale_price ? parseFloat(product.sale_price) : null;
+  const hasDiscount = salePrice && salePrice < price;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -92,12 +104,12 @@ export default function ProductDetail() {
           <div className="flex items-center gap-3 mb-6">
             {hasDiscount ? (
               <>
-                <span className="text-2xl font-bold text-red-600">R{product.sale_price?.toFixed(2)}</span>
-                <span className="text-lg text-gray-400 line-through">R{product.price?.toFixed(2)}</span>
+                <span className="text-2xl font-bold text-red-600">R{salePrice.toFixed(2)}</span>
+                <span className="text-lg text-gray-400 line-through">R{price.toFixed(2)}</span>
                 <span className="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded">Sale</span>
               </>
             ) : (
-              <span className="text-2xl font-bold">R{product.price?.toFixed(2)}</span>
+              <span className="text-2xl font-bold">R{price.toFixed(2)}</span>
             )}
           </div>
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authAPI } from '@/api/apiService';
 import { useAuth } from '@/lib/AuthContext';
+import { LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -50,7 +51,7 @@ export default function Login() {
           {error && <p className="text-sm text-red-600">{error}</p>}
           <div className="flex items-center justify-between">
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Signing in…' : 'Sign in'}
+              {loading ? 'Signing in…' : <><LogIn className="w-4 h-4 mr-2" /> Sign in</>}
             </Button>
           </div>
         </form>

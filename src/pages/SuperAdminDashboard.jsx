@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
-import { ShoppingBag, Megaphone, Users, Camera, Calendar, Handshake, UserCircle, Briefcase, Settings, Package } from "lucide-react";
+import { ShoppingBag, Megaphone, Users, Camera, Calendar, Handshake, UserCircle, Briefcase, Settings, Package, Eye } from "lucide-react";
 
 // Import all management components
 import ProductManagement from "@/components/superadmin/ProductManagement";
@@ -181,7 +181,7 @@ function OrderManagement() {
                       onClick={() => {/* Open order details modal */}}
                       className="text-blue-600 hover:text-blue-800 text-sm"
                     >
-                      View Details
+                      <Eye className="w-4 h-4 mr-1 inline" /> View Details
                     </button>
                   </td>
                 </tr>
