@@ -18,6 +18,14 @@ const badgeVariants = cva(
   }
 )
 
+/**
+ * @typedef {Object} BadgeProps
+ * @property {string} [className]
+ * @property {"default" | "secondary" | "destructive"} [variant]
+ * @property {React.ReactNode} [children]
+ */
+
+/** @type {React.FC<BadgeProps & React.HTMLAttributes<HTMLDivElement>>} */
 function Badge({ className, variant, ...props }) {
   return (<div className={cn(badgeVariants({ variant }), className)} {...props} />)
 }

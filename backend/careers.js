@@ -32,13 +32,14 @@ router.get('/:id', async (req, res) => {
 // POST /api/careers - Admin & Super Admin only
 router.post('/', authenticateToken, authorizeRoles('admin', 'super_admin'), async (req, res) => {
   try {
-    const { title, description, requirements, location, type, salary_range, is_active } = req.body;
+    const { title, department, description, location, type, is_open } = req.body;
     const [result] = await pool.query(
-      'INSERT INTO careers (title, description, requirements, location, type, salary_range, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [title, description, JSON.stringify(requirements || []), location, type, salary_range, is_active !== false]
+      'INSERT INTO careers (title, department, description, location, type, is_open) VALUES (?, ?, ?, ?, ?, ?)',
+      [title, department, description, location, type, is_open !== false]
     );
     res.status(201).json({ message: 'Career created', id: result.insertId });
   } catch (error) {
+    console.error('Create career error:', error.message);
     res.status(500).json({ message: 'Server error creating career' });
   }
 });
@@ -46,13 +47,14 @@ router.post('/', authenticateToken, authorizeRoles('admin', 'super_admin'), asyn
 // PUT /api/careers/:id - Admin & Super Admin only
 router.put('/:id', authenticateToken, authorizeRoles('admin', 'super_admin'), async (req, res) => {
   try {
-    const { title, description, requirements, location, type, salary_range, is_active } = req.body;
+    const { title, department, description, location, type, is_open } = req.body;
     await pool.query(
-      'UPDATE careers SET title = ?, description = ?, requirements = ?, location = ?, type = ?, salary_range = ?, is_active = ? WHERE id = ?',
-      [title, description, JSON.stringify(requirements || []), location, type, salary_range, is_active !== false, req.params.id]
+      'UPDATE careers SET title = ?, department = ?, description = ?, location = ?, type = ?, is_open = ? WHERE id = ?',
+      [title, department, description, location, type, is_open !== false, req.params.id]
     );
     res.json({ message: 'Career updated' });
   } catch (error) {
+    console.error('Update career error:', error.message);
     res.status(500).json({ message: 'Server error updating career' });
   }
 });

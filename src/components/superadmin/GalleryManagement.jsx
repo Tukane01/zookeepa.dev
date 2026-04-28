@@ -207,7 +207,7 @@ export default function GalleryManagement() {
             <Button
               className="bg-black text-white rounded-none"
               onClick={save}
-              disabled={saving || !form.image_id} {/* Icon size is fine here */}
+              disabled={saving || !form.image_id}
             >
               {saving ? "Saving…" : <><Save className="w-5 h-5 mr-2" /> {editing ? "Update" : "Add Image"}</>}
             </Button>

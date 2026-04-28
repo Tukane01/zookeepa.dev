@@ -39,8 +39,8 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      host: '127.0.0.1', // Bind to localhost only
-      port: 5174,
+      host: '127.0.0.1', // Bind to localhost only (you can change this if needed)
+      port: 5175, // Changed from 5174 to 5175
       strictPort: true,
       // Allow all hosts - essential for Modal tunnel URLs
       allowedHosts: true,

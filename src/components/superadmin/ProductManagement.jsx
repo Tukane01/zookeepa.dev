@@ -11,6 +11,9 @@ const fetchProducts = async () => {
   return await productsAPI.getAll();
 };
 
+/**
+ * @param {number} id
+ */
 const deleteProduct = async (id) => {
   return await productsAPI.delete(id);
 };
@@ -33,11 +36,17 @@ export default function ProductManagement() {
     },
   });
 
+  /**
+   * @param {{ id: number }} product
+   */
   const handleEdit = (product) => {
     setSelectedProduct(product);
     setShowForm(true);
   };
 
+  /**
+   * @param {number} id
+   */
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       deleteProductMutation.mutate(id);
@@ -77,7 +86,7 @@ export default function ProductManagement() {
                 <div className="flex items-start justify-between mb-2">
                   <h3 className="font-semibold text-lg">{product.name}</h3>
                   <div className="flex gap-1">
-                    {product.is_featured && <Badge className="bg-black text-white text-xs">Featured</Badge>}
+                    {product.is_featured && <Badge variant="default" className="bg-black text-white text-xs">Featured</Badge>}
                     {!product.is_active && <Badge variant="destructive" className="text-xs">Inactive</Badge>}
                   </div>
                 </div>
@@ -90,7 +99,7 @@ export default function ProductManagement() {
                     size="sm"
                     onClick={() => handleEdit(product)}
                     className="flex-1"
-                  > {/* Increased icon size */}
+                  >
                     <Pencil className="w-6 h-6 mr-1" />
                     Edit
                   </Button>
@@ -98,7 +107,7 @@ export default function ProductManagement() {
                     variant="outline"
                     size="sm"
                     onClick={() => handleDelete(product.id)}
-                    className="text-red-600 hover:text-red-700" {/* Increased icon size */}
+                    className="text-red-600 hover:text-red-700"
                   >
                     <Trash2 className="w-6 h-6" />
                   </Button>

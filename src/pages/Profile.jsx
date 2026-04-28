@@ -48,6 +48,7 @@ export default function Profile() {
     },
   });
 
+  /** @param {React.FormEvent<HTMLFormElement>} e */
   const handleSubmit = (e) => {
     e.preventDefault();
     updateProfileMutation.mutate({
@@ -78,7 +79,13 @@ export default function Profile() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <h1 className="text-4xl font-bold text-gray-900 mb-4">My Profile</h1>
-      <div className="mb-6"> ructive" className="rounded-none" onClick={handleDeleteAccount}>
+      <div className="mb-6">
+        <Button
+          type="button"
+          variant="outline"
+          className="rounded-none"
+          onClick={handleDeleteAccount}
+        >
           <Trash2 className="w-4 h-4 mr-2" /> Delete My Account
         </Button>
       </div>
@@ -180,12 +187,12 @@ export default function Profile() {
                 className="bg-black hover:bg-gray-800 text-white"
               >
                 {saved ? (
-                  <> {/* I<CheckCircle className="w-4 h-4 mr-2" />
-                    Saved
+                  <>
+                    <CheckCircle className="w-4 h-4 mr-2" /> Saved
                   </>
                 ) : (
-                  <> {/* Increased icon size */}
-                    <Save Changes
+                  <>
+                    <Save className="w-4 h-4 mr-2" /> Save Changes
                   </>
                 )}
               </Button>

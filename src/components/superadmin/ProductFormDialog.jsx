@@ -67,6 +67,7 @@ export default function ProductFormDialog({ product, onClose }) {
     },
   });
 
+  /** @param {React.ChangeEvent<HTMLInputElement>} e */
   const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -80,7 +81,7 @@ export default function ProductFormDialog({ product, onClose }) {
       form.append('altText', formData.name || '');
 
       const token = localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
 
       const response = await fetch('/api/images/upload', {
         method: 'POST',
@@ -98,12 +99,15 @@ export default function ProductFormDialog({ product, onClose }) {
       setImagePreviewUrl(URL.createObjectURL(file));
     } catch (err) {
       console.error('Image upload error:', err);
-      setErrorMessage(err.message || 'Image upload failed');
+      setErrorMessage(err instanceof Error ? err.message : 'Image upload failed');
     } finally {
       setUploading(false);
     }
   };
 
+  /**
+   * @param {string} size
+   */
   const toggleSize = (size) => {
     const sizes = formData.sizes.includes(size)
       ? formData.sizes.filter(s => s !== size)
@@ -118,10 +122,14 @@ export default function ProductFormDialog({ product, onClose }) {
     }
   };
 
+  /**
+   * @param {string} color
+   */
   const removeColor = (color) => {
     setFormData({ ...formData, colors: formData.colors.filter(c => c !== color) });
   };
 
+  /** @param {React.FormEvent<HTMLFormElement>} e */
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.name || formData.price <= 0) {

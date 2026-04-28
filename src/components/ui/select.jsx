@@ -6,6 +6,14 @@ import { cn } from "@/lib/utils"
 const Select = SelectPrimitive.Root
 const SelectValue = SelectPrimitive.Value
 
+/**
+ * @typedef {Object} SelectWrapperProps
+ * @property {string} [className]
+ * @property {React.ReactNode} [children]
+ * @property {"popper" | string} [position]
+ */
+
+/** @type {React.ForwardRefExoticComponent<SelectWrapperProps & React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>>} */
 const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
@@ -18,6 +26,7 @@ const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) 
 ))
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
 
+/** @type {React.ForwardRefExoticComponent<SelectWrapperProps & React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>>} */
 const SelectContent = React.forwardRef(({ className, children, position = "popper", ...props }, ref) => (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
@@ -34,6 +43,7 @@ const SelectContent = React.forwardRef(({ className, children, position = "poppe
 ))
 SelectContent.displayName = SelectPrimitive.Content.displayName
 
+/** @type {React.ForwardRefExoticComponent<SelectWrapperProps & React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>>} */
 const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => (
   <SelectPrimitive.Item
     ref={ref}

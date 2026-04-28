@@ -1,6 +1,13 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
+/**
+ * @typedef {Object} CardProps
+ * @property {string} [className]
+ * @property {React.ReactNode} [children]
+ */
+
+/** @type {React.ForwardRefExoticComponent<CardProps & React.HTMLAttributes<HTMLDivElement>>} */
 const Card = React.forwardRef(
   ({ className, ...props }, ref) => (
     <div ref={ref} className={cn("rounded-lg border bg-card text-card-foreground shadow-sm", className)} {...props} />
@@ -8,6 +15,7 @@ const Card = React.forwardRef(
 )
 Card.displayName = "Card"
 
+/** @type {React.ForwardRefExoticComponent<CardProps & React.HTMLAttributes<HTMLDivElement>>} */
 const CardHeader = React.forwardRef(
   ({ className, ...props }, ref) => (
     <div ref={ref} className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
@@ -15,6 +23,7 @@ const CardHeader = React.forwardRef(
 )
 CardHeader.displayName = "CardHeader"
 
+/** @type {React.ForwardRefExoticComponent<CardProps & React.HTMLAttributes<HTMLHeadingElement>>} */
 const CardTitle = React.forwardRef(
   ({ className, ...props }, ref) => (
     <h3 ref={ref} className={cn("text-2xl font-semibold leading-none tracking-tight", className)} {...props} />
@@ -22,6 +31,7 @@ const CardTitle = React.forwardRef(
 )
 CardTitle.displayName = "CardTitle"
 
+/** @type {React.ForwardRefExoticComponent<CardProps & React.HTMLAttributes<HTMLDivElement>>} */
 const CardContent = React.forwardRef(
   ({ className, ...props }, ref) => (
     <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
@@ -29,6 +39,7 @@ const CardContent = React.forwardRef(
 )
 CardContent.displayName = "CardContent"
 
+/** @type {React.ForwardRefExoticComponent<CardProps & React.HTMLAttributes<HTMLDivElement>>} */
 const CardFooter = React.forwardRef(
   ({ className, ...props }, ref) => (
     <div ref={ref} className={cn("flex items-center p-6 pt-0", className)} {...props} />

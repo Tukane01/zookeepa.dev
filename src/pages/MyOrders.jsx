@@ -29,11 +29,15 @@ export default function MyOrders() {
       .then(res => res.ok ? res.json() : [])
       .then(data => {
         if (Array.isArray(data)) {
-           setOrders(data.map(o => ({
-             ...o,
-             items: typeof o.items === 'string' ? JSON.parse(o.items) : o.items,
-             shipping_address: typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : o.shipping_address
-           })));
+           setOrders(data.map(o => {
+             const totalAmount = parseFloat(o.total_amount);
+             return {
+               ...o,
+               total_amount: Number.isFinite(totalAmount) ? totalAmount : 0,
+               items: typeof o.items === 'string' ? JSON.parse(o.items) : o.items,
+               shipping_address: typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : o.shipping_address
+             };
+           }));
         }
       })
       .finally(() => setLoading(false));

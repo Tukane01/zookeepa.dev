@@ -6,6 +6,13 @@ import { cn } from "@/lib/utils"
 const Dialog = DialogPrimitive.Root
 const DialogPortal = DialogPrimitive.Portal
 
+/**
+ * @typedef {Object} DialogProps
+ * @property {string} [className]
+ * @property {React.ReactNode} [children]
+ */
+
+/** @type {React.ForwardRefExoticComponent<DialogProps & React.HTMLAttributes<HTMLDivElement>>} */
 const DialogOverlay = React.forwardRef(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
@@ -15,6 +22,7 @@ const DialogOverlay = React.forwardRef(({ className, ...props }, ref) => (
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
+/** @type {React.ForwardRefExoticComponent<DialogProps & React.HTMLAttributes<HTMLDivElement>>} */
 const DialogContent = React.forwardRef(({ className, children, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
@@ -33,16 +41,19 @@ const DialogContent = React.forwardRef(({ className, children, ...props }, ref) 
 ))
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
+/** @type {React.ForwardRefExoticComponent<DialogProps & React.HTMLAttributes<HTMLDivElement>>} */
 const DialogHeader = React.forwardRef(({ className, ...props }, ref) => (
   <div ref={ref} className={cn("flex flex-col space-y-1.5 text-center sm:text-left", className)} {...props} />
 ))
 DialogHeader.displayName = "DialogHeader"
 
+/** @type {React.ForwardRefExoticComponent<DialogProps & React.HTMLAttributes<HTMLHeadingElement>>} */
 const DialogTitle = React.forwardRef(({ className, ...props }, ref) => (
   <DialogPrimitive.Title ref={ref} className={cn("text-lg font-semibold leading-none tracking-tight", className)} {...props} />
 ))
 DialogTitle.displayName = DialogPrimitive.Title.displayName
 
+/** @type {React.ForwardRefExoticComponent<DialogProps & React.HTMLAttributes<HTMLDivElement>>} */
 const DialogFooter = React.forwardRef(({ className, ...props }, ref) => (
   <div ref={ref} className={cn("flex items-center justify-end gap-2", className)} {...props} />
 ))
